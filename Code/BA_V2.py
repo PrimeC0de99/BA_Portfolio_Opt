@@ -127,3 +127,50 @@ example_month = all_months[0] # <-- Beispiel zeigt jetzt den ersten optimierten 
 print(f"MinVar Portfolio für {example_month}:")
 
 print(minvar_portfolios[example_month])
+
+
+# Hier alles selbst!!!!!
+# ---------------------------------------------------------
+#                       HRP
+# ---------------------------------------------------------
+
+from scipy.cluster.hierarchy import linkage
+from scipy.spatial.distance import squareform
+import matplotlib.pyplot as plt
+from scipy.cluster.hierarchy import dendrogram
+
+# Berechnung der Korrelationsmatrix
+df_corr = Daten_20_extended.drop(columns = ['Date'])
+corr = Daten_20_extended.corr()
+corr = corr.drop(columns = ['Date'], index = ['Date'])
+
+# print('Korrelationsmatrix: ')
+# print(f' {corr}')
+
+# Distanzmatrix bzw Metrik die auf die Korrelationsmatrix angewendet wird
+dist = 1 - corr
+dist = np.sqrt(0.5 * dist)
+
+print('Distanzmatrix: \n', dist)
+
+
+# Vorbereitungen für das Dendrogramm
+dist_array = dist.values
+dist_vector = squareform(dist_array)
+Z = linkage(dist_vector, method='ward')
+
+
+# 3. Dendrogramm erstellen
+plt.figure(figsize=(20, 7))
+dendrogram(
+    Z,
+    orientation='top',           # Ausrichtung: von oben nach unten
+    labels=dist.columns.tolist(), # Namen der Aktien als Labels
+    distance_sort='descending',  # Sortierung (optional)
+    show_leaf_counts=True
+)
+
+plt.title('Hierarchisches Clustering der Aktienrenditen')
+plt.xlabel('Aktien')
+plt.ylabel('Distanz (Cluster-Ähnlichkeit)')
+plt.show()
