@@ -1,6 +1,5 @@
 import pandas as pd
 import numpy as np
-from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
 # ------------------------------------------------------------
@@ -76,9 +75,8 @@ print("\nKovarianzmatrix (Ausschnitt):\n", portfolio_input[first_key]["cov"].ilo
 
 
 
+# -------------------------------------------------------------------------------------
 
-import numpy as np
-import pandas as pd
 from cvxopt import matrix, solvers
 
 # cvxopt Einstellungen: keine Ausgabe bei der Optimierung
@@ -127,4 +125,5 @@ for month in all_months: # <-- ÄNDERUNG HIER: Schleife startet beim ersten verf
 # Beispielausgabe
 example_month = all_months[0] # <-- Beispiel zeigt jetzt den ersten optimierten Monat (2000-01-01)
 print(f"MinVar Portfolio für {example_month}:")
+
 print(minvar_portfolios[example_month])
