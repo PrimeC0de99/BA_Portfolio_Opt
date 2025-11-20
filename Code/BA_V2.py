@@ -2,10 +2,20 @@ import pandas as pd
 import numpy as np
 from dateutil.relativedelta import relativedelta
 
+# Optimierung
+from cvxopt import matrix, solvers
+
+# HRP
+from scipy.cluster.hierarchy import linkage
+from scipy.spatial.distance import squareform
+import matplotlib.pyplot as plt
+from scipy.cluster.hierarchy import dendrogram
+
+
 # ------------------------------------------------------------
 #  1. Rohdaten laden (UNVERÄNDERT)
 # ------------------------------------------------------------
-Daten = pd.read_csv("F:/R/BA/Kursdaten.csv")
+Daten = pd.read_csv("C:/Python/BA/Daten/Kursdaten.csv")
 Daten["Date"] = pd.to_datetime(Daten["Date"])
 
 # ------------------------------------------------------------
@@ -75,9 +85,9 @@ print("\nKovarianzmatrix (Ausschnitt):\n", portfolio_input[first_key]["cov"].ilo
 
 
 
-# -------------------------------------------------------------------------------------
-
-from cvxopt import matrix, solvers
+# -----------------------------------------------------------------------------
+#                               Optimierung
+# -----------------------------------------------------------------------------
 
 # cvxopt Einstellungen: keine Ausgabe bei der Optimierung
 solvers.options['show_progress'] = False
@@ -133,11 +143,6 @@ print(minvar_portfolios[example_month])
 # ---------------------------------------------------------
 #                       HRP
 # ---------------------------------------------------------
-
-from scipy.cluster.hierarchy import linkage
-from scipy.spatial.distance import squareform
-import matplotlib.pyplot as plt
-from scipy.cluster.hierarchy import dendrogram
 
 # Berechnung der Korrelationsmatrix
 df_corr = Daten_20_extended.drop(columns = ['Date'])
