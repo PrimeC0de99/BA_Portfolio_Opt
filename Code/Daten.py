@@ -1,12 +1,12 @@
 import pandas as pd
 import numpy as np
-from dateutil.relativedelta import relativedelta
+# from dateutil.relativedelta import relativedelta
 
 
 # ------------------------------------------------------------
 #  1. Rohdaten laden (UNVERÄNDERT)
 # ------------------------------------------------------------
-Daten = pd.read_csv("C:/Python/BA/Daten/Kursdaten.csv")
+Daten = pd.read_csv("F:/R/BA/Kursdaten.csv")
 Daten["Date"] = pd.to_datetime(Daten["Date"])
 
 # ------------------------------------------------------------

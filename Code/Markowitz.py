@@ -1,8 +1,12 @@
+import pandas as pd
 from cvxopt import matrix, solvers
 import numpy as np
-import Temp_BA as tp
+import Daten as da
+from dateutil.relativedelta import relativedelta
 
 
+daily_returns = da.daily_returns
+valid_stocks = da.valid_stocks
 # ------------------------------------------------------------
 #  5. Für jeden Monat Erwartungswert & Kovarianzmatrix (letzte 6 Monate)
 # ------------------------------------------------------------
