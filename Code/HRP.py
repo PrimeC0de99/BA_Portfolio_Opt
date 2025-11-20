@@ -4,6 +4,13 @@ from scipy.spatial.distance import squareform
 import matplotlib.pyplot as plt
 from scipy.cluster.hierarchy import dendrogram
 
+import numpy as np
+import pandas as pd
+
+import Daten as da
+
+
+Daten_20_extended = da.Daten_20_extended
 
 # Hier alles selbst!!!!!
 # ---------------------------------------------------------
