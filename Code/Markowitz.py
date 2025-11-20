@@ -46,3 +46,58 @@ first_key = list(portfolio_input.keys())[0]
 print(f"Beispielmonat: {first_key}")
 print("Erwartete Renditen:\n", portfolio_input[first_key]["mu"].head())
 print("\nKovarianzmatrix (Ausschnitt):\n", portfolio_input[first_key]["cov"].iloc[:5, :5])
+
+
+
+# -----------------------------------------------------------------------------
+#                               Optimierung
+# -----------------------------------------------------------------------------
+
+# cvxopt Einstellungen: keine Ausgabe bei der Optimierung
+solvers.options['show_progress'] = False
+
+# Liste für Portfolios
+minvar_portfolios = {}
+
+# Alle Monate aus portfolio_input (Startet jetzt mit 2000-01-01)
+all_months = list(portfolio_input.keys())
+
+#  Schleife über ALLE Monate (ab 2000-01-01) - direkte Optimierung
+for month in all_months: # <-- ÄNDERUNG HIER: Schleife startet beim ersten verfügbaren Monat
+    mu = portfolio_input[month]['mu'].values       # Erwartete Renditen
+    cov_mat = portfolio_input[month]['cov'].values # Kovarianzmatrix
+    n = len(mu)
+
+    # --- Regularisierung falls Kovarianzmatrix nicht positiv definit ---
+    epsilon = 1e-6
+    cov_mat_reg = cov_mat + np.eye(n) * epsilon
+    while np.any(np.linalg.eigvals(cov_mat_reg) <= 0):
+        epsilon *= 10
+        cov_mat_reg = cov_mat + np.eye(n) * epsilon
+
+    # --- Quadratische Programmierung: min w.T * cov * w, s.t. sum(w)=1, w>=0 ---
+    P = matrix(cov_mat_reg)
+    q = matrix(np.zeros(n))
+    
+    # Gleichungen: Summe der Gewichte = 1
+    G = matrix(-np.eye(n))  # w >= 0 -> -w <= 0
+    h = matrix(np.zeros(n))
+    
+    A = matrix(np.ones((1, n)))
+    b = matrix(np.ones(1))
+    
+    # Optimierung
+    sol = solvers.qp(P, q, G, h, A, b)
+    weights = np.array(sol['x']).flatten()
+    
+    # Kleine Rundungsfehler eliminieren
+    weights[weights < 1e-12] = 0
+    
+    # Speichern als Pandas Series
+    minvar_portfolios[month] = pd.Series(weights, index=portfolio_input[month]['mu'].index)
+
+# Beispielausgabe
+example_month = all_months[0] # <-- Beispiel zeigt jetzt den ersten optimierten Monat (2000-01-01)
+print(f"MinVar Portfolio für {example_month}:")
+
+print(minvar_portfolios[example_month])
