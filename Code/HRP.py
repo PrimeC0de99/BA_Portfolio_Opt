@@ -1,8 +1,8 @@
 # HRP
 from scipy.cluster.hierarchy import linkage
 from scipy.spatial.distance import squareform
-import matplotlib.pyplot as plt
-from scipy.cluster.hierarchy import dendrogram
+#import matplotlib.pyplot as plt
+#from scipy.cluster.hierarchy import dendrogram
 import numpy as np
 import pandas as pd
 from dateutil.relativedelta import relativedelta
@@ -34,10 +34,13 @@ def hrp(df):
 
     """
     corr = df.corr()
-    # corr = corr.drop(columns = ['Date'], index = ['Date'])
+    #corr = corr.drop(columns = ['Date'], index = ['Date'])
     
     dist = 1 - corr
     dist = np.sqrt(0.5 * dist)
+    
+    # Symmetrie der Abstandsmatrix erzwingen
+    dist = (dist + dist.T) / 2.0
     
     return corr, dist
     
@@ -87,9 +90,22 @@ for folgemonat in months:
     if prev_window_returns.empty:
         continue
     
-    # Korrelations- und Abstandsmatrix
+    month_key = str(folgemonat.date())
+    asset_names = prev_window_returns.columns.tolist()
+    
+    # Korrelations-, Abstands- und Kovarianzmatrix
     corr, dist = hrp(prev_window_returns)
+    cov = prev_window_returns.cov()
+    
+    # Dendrogramm (Linkage)
+    dist_array = dist.values
+    dist_vector = squareform(dist_array)
+    Z = linkage(dist_vector, method = 'ward')
 
+    # Quasidiagonalisierung
+    order = getQuasiDiag(Z, asset_names)
+    
+    
     # Speicherung
     portfolio_input[str(folgemonat.date())] = {
         "Korrelation": corr,
