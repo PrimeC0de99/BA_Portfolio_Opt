@@ -3,56 +3,44 @@ from scipy.cluster.hierarchy import linkage
 from scipy.spatial.distance import squareform
 import matplotlib.pyplot as plt
 from scipy.cluster.hierarchy import dendrogram
-
 import numpy as np
 import pandas as pd
+from dateutil.relativedelta import relativedelta
 
 import Daten as da
 
 
 Daten_20_extended = da.Daten_20_extended
+daily_returns = da.daily_returns
+valid_stocks = da.valid_stocks
 
 # Hier alles selbst!!!!!
 # ---------------------------------------------------------
 #                       HRP
 # ---------------------------------------------------------
 
-# Berechnung der Korrelationsmatrix
-df_corr = Daten_20_extended.drop(columns = ['Date'])
-corr = Daten_20_extended.corr()
-corr = corr.drop(columns = ['Date'], index = ['Date'])
+def hrp(df):
+    """
+    Generieren der Korrelationsmatrix und der Abstandsmatrtix.
 
-# print('Korrelationsmatrix: ')
-# print(f' {corr}')
+    Parameters
+    ----------
+    df : Datensatz (Dataframe)
 
-# Distanzmatrix bzw Metrik die auf die Korrelationsmatrix angewendet wird
-dist = 1 - corr
-dist = np.sqrt(0.5 * dist)
+    Returns
+    -------
+    corr : Korrelationsmatrix
+    dist : Abstandsmatrix
 
-print('Distanzmatrix: \n', dist)
-
-
-# Vorbereitungen für das Dendrogramm
-dist_array = dist.values
-dist_vector = squareform(dist_array)
-Z = linkage(dist_vector, method='ward')
-
-
-# 3. Dendrogramm erstellen
-plt.figure(figsize=(20, 7))
-dendrogram(
-    Z,
-    orientation='top',           # Ausrichtung: von oben nach unten
-    labels=dist.columns.tolist(), # Namen der Aktien als Labels
-    distance_sort='descending',  # Sortierung (optional)
-    show_leaf_counts=True
-)
-
-plt.title('Hierarchisches Clustering der Aktienrenditen')
-plt.xlabel('Aktien')
-plt.ylabel('Distanz (Cluster-Ähnlichkeit)')
-plt.show()
-
+    """
+    corr = df.corr()
+    # corr = corr.drop(columns = ['Date'], index = ['Date'])
+    
+    dist = 1 - corr
+    dist = np.sqrt(0.5 * dist)
+    
+    return corr, dist
+    
 
 def getQuasiDiag(Z, asset_names):
     """
@@ -80,3 +68,32 @@ def getQuasiDiag(Z, asset_names):
         
     # Konvertiere die sortierten Indizes in Asset-Namen
     return [asset_names[i] for i in sortIx.tolist()]
+
+
+# Erster Folgemonat (Optimierungsziel) ist jetzt 2000-01-01
+months = pd.date_range(start="2000-01-01", end="2024-12-01", freq="MS") # <-- ZURÜCK AUF 2000-01-01
+portfolio_input = {}
+lookback_months = 6  # Zeitraum für Schätzung (UNVERÄNDERT)
+
+for folgemonat in months:
+    start_window = folgemonat - relativedelta(months=lookback_months)
+    
+    # Filter: Tagesrenditen der letzten 6 Monate vor dem Folgemonat
+    prev_window_returns = daily_returns[
+        (daily_returns["Date"] >= start_window) &
+        (daily_returns["Date"] < folgemonat)
+    ][valid_stocks]
+
+    if prev_window_returns.empty:
+        continue
+    
+    # Korrelations- und Abstandsmatrix
+    corr, dist = hrp(prev_window_returns)
+
+    # Speicherung
+    portfolio_input[str(folgemonat.date())] = {
+        "Korrelation": corr,
+        "Abstand": dist
+    }
+
+
