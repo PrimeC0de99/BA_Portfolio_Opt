@@ -1,40 +1,15 @@
-import pandas as pd
+from cvxopt import matrix, solvers
 import numpy as np
-from datetime import datetime
-from dateutil.relativedelta import relativedelta
+import Temp_BA as tp
+
 
 # ------------------------------------------------------------
-# 📘 1. Rohdaten laden
+#  5. Für jeden Monat Erwartungswert & Kovarianzmatrix (letzte 6 Monate)
 # ------------------------------------------------------------
-Daten = pd.read_csv("F:/R/BA/Kursdaten.csv")
-Daten["Date"] = pd.to_datetime(Daten["Date"])
-
-# ------------------------------------------------------------
-# 📘 2. Auswahl der 20 Aktien ab 1998-11-09
-# ------------------------------------------------------------
-stock_cols = [c for c in Daten.columns if c != "Date"]
-start_date = pd.Timestamp("1998-11-09")
-valid_stocks = [col for col in stock_cols if not pd.isna(Daten.loc[Daten["Date"] == start_date, col]).values[0]]
-Daten_20 = Daten.loc[Daten["Date"] >= start_date, ["Date"] + valid_stocks]
-
-# ------------------------------------------------------------
-# 📘 3. Daten ab dem 01.01.2000
-# ------------------------------------------------------------
-Daten_20_2000 = Daten_20[Daten_20["Date"] >= "2000-01-01"].copy()
-
-# ------------------------------------------------------------
-# 📘 4. Tägliche log-Returns berechnen
-# ------------------------------------------------------------
-daily_returns = Daten_20_2000.copy()
-daily_returns[valid_stocks] = np.log(daily_returns[valid_stocks] / daily_returns[valid_stocks].shift(1))
-daily_returns = daily_returns.dropna()
-
-# ------------------------------------------------------------
-# 📘 5. Für jeden Monat Erwartungswert & Kovarianzmatrix (letzte 6 Monate)
-# ------------------------------------------------------------
-months = pd.date_range(start="2000-01-01", end="2024-12-01", freq="MS")
+# Erster Folgemonat (Optimierungsziel) ist jetzt 2000-01-01
+months = pd.date_range(start="2000-01-01", end="2024-12-01", freq="MS") # <-- ZURÜCK AUF 2000-01-01
 portfolio_input = {}
-lookback_months = 6  # Zeitraum für Schätzung
+lookback_months = 6  # Zeitraum für Schätzung (UNVERÄNDERT)
 
 for folgemonat in months:
     start_window = folgemonat - relativedelta(months=lookback_months)
@@ -47,6 +22,8 @@ for folgemonat in months:
 
     if prev_window_returns.empty:
         continue
+    
+    # ... (Rest der Schätzung bleibt unverändert) ...
 
     # --- Schätzung unter Normalverteilungsannahme ---
     mu_log = prev_window_returns.mean()
@@ -72,42 +49,21 @@ print("\nKovarianzmatrix (Ausschnitt):\n", portfolio_input[first_key]["cov"].ilo
 
 
 
+# -----------------------------------------------------------------------------
+#                               Optimierung
+# -----------------------------------------------------------------------------
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-import numpy as np
-import pandas as pd
-from cvxopt import matrix, solvers
-
-# ⚡ cvxopt Einstellungen: keine Ausgabe bei der Optimierung
+# cvxopt Einstellungen: keine Ausgabe bei der Optimierung
 solvers.options['show_progress'] = False
 
 # Liste für Portfolios
 minvar_portfolios = {}
 
-# Alle Monate aus portfolio_input
+# Alle Monate aus portfolio_input (Startet jetzt mit 2000-01-01)
 all_months = list(portfolio_input.keys())
-first_month = all_months[0]
 
-# 1️⃣ Erster Monat: naive Diversifikation
-n_assets = len(portfolio_input[first_month]['mu'])
-naive_weights = np.repeat(1/n_assets, n_assets)
-minvar_portfolios[first_month] = pd.Series(naive_weights, index=portfolio_input[first_month]['mu'].index)
-
-# 2️⃣ Schleife ab dem zweiten Monat
-for month in all_months[1:]:
+#  Schleife über ALLE Monate (ab 2000-01-01) - direkte Optimierung
+for month in all_months: # <-- ÄNDERUNG HIER: Schleife startet beim ersten verfügbaren Monat
     mu = portfolio_input[month]['mu'].values       # Erwartete Renditen
     cov_mat = portfolio_input[month]['cov'].values # Kovarianzmatrix
     n = len(mu)
@@ -141,6 +97,7 @@ for month in all_months[1:]:
     minvar_portfolios[month] = pd.Series(weights, index=portfolio_input[month]['mu'].index)
 
 # Beispielausgabe
-example_month = all_months[1]
+example_month = all_months[0] # <-- Beispiel zeigt jetzt den ersten optimierten Monat (2000-01-01)
 print(f"MinVar Portfolio für {example_month}:")
+
 print(minvar_portfolios[example_month])

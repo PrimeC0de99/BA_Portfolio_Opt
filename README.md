@@ -1,2 +1,2 @@
 # BA_Portfolio_Opt
-Bachelor Thesis about Portfolio Optimization via Markowitz and hierachical clustering...
+Bachelor Thesis about Portfolio Optimization via Markowitz and HRP.
