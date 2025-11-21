@@ -14,7 +14,7 @@ Daten_20_extended = da.Daten_20_extended
 daily_returns = da.daily_returns
 valid_stocks = da.valid_stocks
 
-# Hier alles selbst!!!!!
+# selbst!!!!!
 # ---------------------------------------------------------
 #                       HRP
 # ---------------------------------------------------------
@@ -73,9 +73,69 @@ def getQuasiDiag(Z, asset_names):
     return [asset_names[i] for i in sortIx.tolist()]
 
 
+
+# -----------------------------------------------------------------------------
+
+
+
+def get_ivp_weights(cov_mat):
+    """Berechnet Inverse-Varianz-Gewichte (IVP)."""
+    # 1.0 / np.diag(cov_mat) ist die inverse Varianz
+    ivp = 1.0 / np.diag(cov_mat) 
+    # Normalisierung
+    return ivp / np.sum(ivp)
+
+def getClusterVar(cov, cItems):
+    """Berechnet die Varianz eines Clusters unter IVP-Gewichtung."""
+    
+    # Extrahiere die Kovarianzmatrix für den Cluster
+    cov_sub = cov.loc[cItems, cItems].values
+    
+    # Berechne die IVP-Gewichte für diesen Cluster
+    w_ivp = get_ivp_weights(cov_sub)
+    
+    # Berechne die Varianz des Sub-Portfolios: w' * Cov * w
+    cVar = (w_ivp @ cov_sub @ w_ivp).item()
+    
+    return cVar
+
+
+def getRecBipart(cov, sortIx):
+    # Compute HRP alloc
+    w = pd.Series(1.0, index=sortIx) # Initialisierung als Float
+    cItems = [sortIx] # initialize all items in one cluster
+    
+    while len(cItems) > 0:
+        # Korrektur 1: Benutzung der Ganzzahl-Division (//) für die Bisektion
+        cItems = [i[j:k] for i in cItems 
+                  for j, k in ((0, len(i) // 2), 
+                               (len(i) // 2, len(i))) 
+                  if len(i) > 1]
+        
+        # Korrektur 2: Benutzung von range() anstelle von xrange()
+        for i in range(0, len(cItems), 2): # parse in pairs
+            cItems0 = cItems[i] # cluster 1
+            cItems1 = cItems[i + 1] # cluster 2
+            
+            # getClusterVar muss definiert sein (siehe oben)
+            cVar0 = getClusterVar(cov, cItems0)
+            cVar1 = getClusterVar(cov, cItems1)
+            
+            alpha = 1.0 - cVar0 / (cVar0 + cVar1)
+            
+            w[cItems0] *= alpha # weight 1
+            w[cItems1] *= (1.0 - alpha) # weight 2
+            
+    return w / w.sum() # Finale Normierung (wichtig!)
+
+
+# -----------------------------------------------------------------------------
+
+
 # Erster Folgemonat (Optimierungsziel) ist jetzt 2000-01-01
-months = pd.date_range(start="2000-01-01", end="2024-12-01", freq="MS") # <-- ZURÜCK AUF 2000-01-01
+months = pd.date_range(start="2004-01-01", end="2024-12-01", freq="MS") # <-- ZURÜCK AUF 2000-01-01
 portfolio_input = {}
+hrp_port = {}
 lookback_months = 6  # Zeitraum für Schätzung (UNVERÄNDERT)
 
 for folgemonat in months:
@@ -105,11 +165,16 @@ for folgemonat in months:
     # Quasidiagonalisierung
     order = getQuasiDiag(Z, asset_names)
     
+    # Gewichte für HRP
+    w = getRecBipart(cov, order)
+    
+    # HRP Portfolios speichern
+    hrp_port[month_key] = w.reindex(valid_stocks, fill_value=0.0)
+    
     
     # Speicherung
     portfolio_input[str(folgemonat.date())] = {
         "Korrelation": corr,
         "Abstand": dist
     }
-
 
