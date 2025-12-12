@@ -12,20 +12,20 @@ Daten["Date"] = pd.to_datetime(Daten["Date"])
 # ------------------------------------------------------------
 #  2. Auswahl der 20 Aktien ab 1998-11-09 (UNVERÄNDERT)
 # ------------------------------------------------------------
-stock_cols = [c for c in Daten.columns if c != "Date"]
-start_date_all = pd.Timestamp("1998-11-09")
-valid_stocks = [col for col in stock_cols if not pd.isna(Daten.loc[Daten["Date"] == start_date_all, col]).values[0]]
-Daten_20 = Daten.loc[Daten["Date"] >= start_date_all, ["Date"] + valid_stocks]
+aktien_df = [c for c in Daten.columns if c != "Date"]
+startdatum = pd.Timestamp("1998-11-09")
+aktien20_98 = [col for col in aktien_df if not pd.isna(Daten.loc[Daten["Date"] == startdatum, col]).values[0]]
+daten_20 = Daten.loc[Daten["Date"] >= startdatum, ["Date"] + aktien20_98]
 
 # ------------------------------------------------------------
 #  3. Daten ab dem 01.07.1999 (für 6 Monate Lookback)
 # ------------------------------------------------------------
 start_lookback = pd.Timestamp("1999-07-01") # Startet 6 Monate vor 2000-01-01
-Daten_20_extended = Daten_20[Daten_20["Date"] >= start_lookback].copy() # <-- ÄNDERUNG HIER
+daten_20_erweitert = daten_20[daten_20["Date"] >= start_lookback].copy() # <-- ÄNDERUNG HIER
 
 # ------------------------------------------------------------
 #  4. Tägliche log-Returns berechnen
 # ------------------------------------------------------------
-daily_returns = Daten_20_extended.copy() # <-- Basis ist jetzt der erweiterte Datensatz
-daily_returns[valid_stocks] = np.log(daily_returns[valid_stocks] / daily_returns[valid_stocks].shift(1))
-daily_returns = daily_returns.dropna() # Entfernt die erste Zeile (Rendite vom 02.07.1999 ist die erste)
+rendite_tag = daten_20_erweitert.copy() # <-- Basis ist jetzt der erweiterte Datensatz
+rendite_tag[aktien20_98] = np.log(rendite_tag[aktien20_98] / rendite_tag[aktien20_98].shift(1))
+rendite_tag = rendite_tag.dropna() # Entfernt die erste Zeile (Rendite vom 02.07.1999 ist die erste)
