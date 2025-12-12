@@ -11,10 +11,9 @@ import Daten as da
 
 
 Daten_20_extended = da.Daten_20_extended
-daily_returns = da.daily_returns
-valid_stocks = da.valid_stocks
+rendite_tag = da.rendite_tag
+aktien20_98 = da.aktien20_98
 
-# selbst!!!!!
 # ---------------------------------------------------------
 #                       HRP
 # ---------------------------------------------------------
@@ -45,7 +44,7 @@ def hrp(df):
     return corr, dist
     
 
-def getQuasiDiag(Z, asset_names):
+def getQuasiDiag(Z, aktien):
     """
     Ermittelt iterativ die quasi-diagonale Reihenfolge der Assets (Seriation).
     """
@@ -70,7 +69,7 @@ def getQuasiDiag(Z, asset_names):
         sortIx.index = range(sortIx.shape[0])
         
     # Konvertiere die sortierten Indizes in Asset-Namen
-    return [asset_names[i] for i in sortIx.tolist()]
+    return [aktien[i] for i in sortIx.tolist()]
 
 
 
@@ -133,25 +132,25 @@ def getRecBipart(cov, sortIx):
 
 
 # Erster Folgemonat (Optimierungsziel) ist jetzt 2000-01-01
-months = pd.date_range(start="2004-01-01", end="2024-12-01", freq="MS") # <-- ZURÜCK AUF 2000-01-01
-portfolio_input = {}
+monate = pd.date_range(start="2004-01-01", end="2024-12-01", freq="MS") # <-- ZURÜCK AUF 2000-01-01
+portfolio_features = {}
 hrp_port = {}
-lookback_months = 6  # Zeitraum für Schätzung (UNVERÄNDERT)
+rueck = 6  # Zeitraum für Schätzung (UNVERÄNDERT)
 
-for folgemonat in months:
-    start_window = folgemonat - relativedelta(months=lookback_months)
+for folgemonat in monate:
+    start_window = folgemonat - relativedelta(monate=rueck)
     
     # Filter: Tagesrenditen der letzten 6 Monate vor dem Folgemonat
-    prev_window_returns = daily_returns[
-        (daily_returns["Date"] >= start_window) &
-        (daily_returns["Date"] < folgemonat)
-    ][valid_stocks]
+    prev_window_returns = rendite_tag[
+        (rendite_tag["Date"] >= start_window) &
+        (rendite_tag["Date"] < folgemonat)
+    ][aktien20_98]
 
     if prev_window_returns.empty:
         continue
     
     month_key = str(folgemonat.date())
-    asset_names = prev_window_returns.columns.tolist()
+    aktien = prev_window_returns.columns.tolist()
     
     # Korrelations-, Abstands- und Kovarianzmatrix
     corr, dist = hrp(prev_window_returns)
@@ -163,18 +162,17 @@ for folgemonat in months:
     Z = linkage(dist_vector, method = 'ward')
 
     # Quasidiagonalisierung
-    order = getQuasiDiag(Z, asset_names)
+    order = getQuasiDiag(Z, aktien)
     
     # Gewichte für HRP
     w = getRecBipart(cov, order)
     
     # HRP Portfolios speichern
-    hrp_port[month_key] = w.reindex(valid_stocks, fill_value=0.0)
+    hrp_port[month_key] = w.reindex(aktien20_98, fill_value=0.0)
     
     
     # Speicherung
-    portfolio_input[str(folgemonat.date())] = {
+    portfolio_features[str(folgemonat.date())] = {
         "Korrelation": corr,
         "Abstand": dist
     }
-
