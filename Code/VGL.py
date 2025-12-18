@@ -1,28 +1,26 @@
-# import numpy as np
+#import numpy as np
 import Daten as da
 import Markowitz as ma
 import HRP as hrp
 
 # Daten laden
-hrp = hrp.hrp_port
-mark = ma.minvar_portfolios
-# daily_returns = da.daily_returns
-Daten_20_extended = da.Daten_20_extended
-valid_stocks = da.valid_stocks
-
-
+hrp_gewichte = hrp.hrp_port
+mark_gewichte = ma.minvar_portfolios
+#daily_returns = da.daily_returns
+Daten_20_extended = da.daten_20_erweitert
+aktien = da.aktien20_98
 
 # Bestimmen der tatsächlichen täglichen Renditen
 daily_returns = Daten_20_extended.copy()    # <-- Basis ist jetzt der erweiterte Datensatz
-daily_returns[valid_stocks] = (daily_returns[valid_stocks] / daily_returns[valid_stocks].shift(1)) - 1
+daily_returns[aktien] = (daily_returns[aktien] / daily_returns[aktien].shift(1)) - 1
 daily_returns = daily_returns.dropna()      # Entfernt die erste Zeile (Rendite vom 02.07.1999 ist die erste)
 
 # tägliche Renditen ab dem Jahr 2004
-daily_returns2004 = daily_returns.loc[daily_returns['Date'] >= '2004-01-01', ['Date'] + valid_stocks]
+daily_returns2004 = daily_returns.loc[daily_returns['Date'] >= '2004-01-01', ['Date'] + aktien]
 print('\n Tägliche Renditen ab 2004: \n', daily_returns2004.head(10))
 
 # tägliche Renditefaktoren
-daily_returns2004_faktoren = daily_returns2004[valid_stocks] + 1
+daily_returns2004_faktoren = daily_returns2004[aktien] + 1
 daily_returns2004_faktoren.insert(0, 'Date', daily_returns2004['Date'].values) # Datumsspalte einfügen
 
 print('\n Tägliche Renditefaktoren (2004): \n', daily_returns2004_faktoren)
@@ -33,7 +31,7 @@ daily_returns2004_faktoren['Month_Key'] = daily_returns2004_faktoren['Date'].dt.
 print('\n Faktoren-DF mit Month_Key: \n', daily_returns2004_faktoren.head(10))
 
 # Gruppiert nach Monat und multipliziert alle täglichen Faktoren jeder Aktie
-monthly_factors = daily_returns2004_faktoren.groupby('Month_Key')[valid_stocks].prod()
+monthly_factors = daily_returns2004_faktoren.groupby('Month_Key')[aktien].prod()
 
 print('\n Monatliche Faktoren (kumuliert): \n', monthly_factors.head(5))
 
@@ -41,6 +39,12 @@ print('\n Monatliche Faktoren (kumuliert): \n', monthly_factors.head(5))
 return_month = monthly_factors - 1
 
 print('\n Monatliche Renditen: \n', return_month.head(10))
+
+
+performance_monatlich = 1
+
+
+
 
 
 '''
