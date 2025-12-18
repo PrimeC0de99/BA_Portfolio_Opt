@@ -10,7 +10,7 @@ from dateutil.relativedelta import relativedelta
 import Daten as da
 
 
-Daten_20_extended = da.Daten_20_extended
+# Daten_20_extended = da.Daten_20_extended
 rendite_tag = da.rendite_tag
 aktien20_98 = da.aktien20_98
 
@@ -138,7 +138,7 @@ hrp_port = {}
 rueck = 6  # Zeitraum für Schätzung (UNVERÄNDERT)
 
 for folgemonat in monate:
-    start_window = folgemonat - relativedelta(monate=rueck)
+    start_window = folgemonat - relativedelta(month=rueck)
     
     # Filter: Tagesrenditen der letzten 6 Monate vor dem Folgemonat
     prev_window_returns = rendite_tag[
