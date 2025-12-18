@@ -5,19 +5,21 @@ import Daten as da
 from dateutil.relativedelta import relativedelta
 
 
+# aktien : Die Liste der Aktien, die im Portfolio sind (Liste von Strings)
+# rendite_tag: Log-Rendite
 rendite_tag = da.rendite_tag
-aktien = da.aktien
+aktien = da.aktien20_98
 
 # ------------------------------------------------------------
 #  5. Für jeden Monat Erwartungswert & Kovarianzmatrix (letzte 6 Monate)
 # ------------------------------------------------------------
 # Erster Folgemonat (Optimierungsziel) ist jetzt 2000-01-01
-monate = pd.date_range(start="2000-01-01", end="2024-12-01", freq="MS") # <-- ZURÜCK AUF 2000-01-01
+monate = pd.date_range(start="2004-01-01", end="2024-12-01", freq="MS") # <-- ZURÜCK AUF 2000-01-01
 portfolio_features = {}
 rueck = 6  # Zeitraum für Schätzung (UNVERÄNDERT)
 
 for folgemonat in monate:
-    start_rueck = folgemonat - relativedelta(monate=rueck)
+    start_rueck = folgemonat - relativedelta(months=rueck)
     
     # Filter: Tagesrenditen der letzten 6 Monate vor dem Folgemonat
     hist_daten = rendite_tag[
@@ -35,14 +37,14 @@ for folgemonat in monate:
     sigma2_log = hist_daten.var()
 
     # Erwarteter arithmetischer Return unter lognormaler Annahme
-    mu_erwartet = np.exp(mu_log + 0.5 * sigma2_log) - 1
+    #mu_arith = np.exp(mu_log + 0.5 * sigma2_log) - 1
 
-    # Kovarianzmatrix der log-returns
+    # Kovarianzmatrix der Log-returns
     cov_mat = hist_daten.cov()
 
     # Speicherung
     portfolio_features[str(folgemonat.date())] = {
-        "mu": mu_erwartet,
+        "mu": mu_log,
         "cov": cov_mat
     }
 
@@ -58,10 +60,7 @@ print("\nKovarianzmatrix (Ausschnitt):\n", portfolio_features[first_key]["cov"].
 #                               Optimierung
 # -----------------------------------------------------------------------------
 
-# cvxopt Einstellungen: keine Ausgabe bei der Optimierung
-solvers.options['show_progress'] = False
-
-# Liste für Portfolios
+# Dictionary für Portfolios
 minvar_portfolios = {}
 
 # Alle Monate aus portfolio_features (Startet jetzt mit 2000-01-01)
@@ -103,6 +102,4 @@ for monat in monate: # <-- ÄNDERUNG HIER: Schleife startet beim ersten verfügb
 
 # Beispielausgabe
 example_month = monate[0] # <-- Beispiel zeigt jetzt den ersten optimierten Monat (2000-01-01)
-print(f"MinVar Portfolio für {example_month}:")
-
-print(minvar_portfolios[example_month])
+print(f"\nMinVar Portfolio für {example_month}: \n", minvar_portfolios[example_month])
