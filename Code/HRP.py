@@ -1,20 +1,19 @@
 # HRP
 from scipy.cluster.hierarchy import linkage
 from scipy.spatial.distance import squareform
-#import matplotlib.pyplot as plt
 #from scipy.cluster.hierarchy import dendrogram
 import numpy as np
 import pandas as pd
 from dateutil.relativedelta import relativedelta
 
 import Daten as da
+import Markowitz as mark
 
+# Daten_20_extended = da.Daten_20_extended
+rendite_tag = da.rendite_tag    # Log-Renditen
+aktien = da.aktien20_98
+portfolio_input = mark.portfolio_features
 
-Daten_20_extended = da.Daten_20_extended
-daily_returns = da.daily_returns
-valid_stocks = da.valid_stocks
-
-# selbst!!!!!
 # ---------------------------------------------------------
 #                       HRP
 # ---------------------------------------------------------
@@ -45,7 +44,7 @@ def hrp(df):
     return corr, dist
     
 
-def getQuasiDiag(Z, asset_names):
+def getQuasiDiag(Z, aktien):
     """
     Ermittelt iterativ die quasi-diagonale Reihenfolge der Assets (Seriation).
     """
@@ -70,7 +69,7 @@ def getQuasiDiag(Z, asset_names):
         sortIx.index = range(sortIx.shape[0])
         
     # Konvertiere die sortierten Indizes in Asset-Namen
-    return [asset_names[i] for i in sortIx.tolist()]
+    return [aktien[i] for i in sortIx.tolist()]
 
 
 
@@ -133,48 +132,46 @@ def getRecBipart(cov, sortIx):
 
 
 # Erster Folgemonat (Optimierungsziel) ist jetzt 2000-01-01
-months = pd.date_range(start="2004-01-01", end="2024-12-01", freq="MS") # <-- ZURÜCK AUF 2000-01-01
-portfolio_input = {}
+monate = pd.date_range(start="2004-01-01", end="2024-12-01", freq="MS")
+portfolio_features = {}
 hrp_port = {}
-lookback_months = 6  # Zeitraum für Schätzung (UNVERÄNDERT)
+rueck = 6  # Zeitraum für Schätzung
 
-for folgemonat in months:
-    start_window = folgemonat - relativedelta(months=lookback_months)
+for folgemonat in monate:
+    start_window = folgemonat - relativedelta(months=rueck)
     
     # Filter: Tagesrenditen der letzten 6 Monate vor dem Folgemonat
-    prev_window_returns = daily_returns[
-        (daily_returns["Date"] >= start_window) &
-        (daily_returns["Date"] < folgemonat)
-    ][valid_stocks]
+    prev_window_returns = rendite_tag[
+        (rendite_tag["Date"] >= start_window) &
+        (rendite_tag["Date"] < folgemonat)
+    ][aktien]
 
     if prev_window_returns.empty:
         continue
     
     month_key = str(folgemonat.date())
-    asset_names = prev_window_returns.columns.tolist()
+    aktien = prev_window_returns.columns.tolist()
     
     # Korrelations-, Abstands- und Kovarianzmatrix
     corr, dist = hrp(prev_window_returns)
-    cov = prev_window_returns.cov()
-    
+    cov = portfolio_input[str(folgemonat.date())]['cov']
+            
     # Dendrogramm (Linkage)
     dist_array = dist.values
     dist_vector = squareform(dist_array)
     Z = linkage(dist_vector, method = 'ward')
 
     # Quasidiagonalisierung
-    order = getQuasiDiag(Z, asset_names)
+    order = getQuasiDiag(Z, aktien)
     
     # Gewichte für HRP
     w = getRecBipart(cov, order)
     
     # HRP Portfolios speichern
-    hrp_port[month_key] = w.reindex(valid_stocks, fill_value=0.0)
-    
-    
+    hrp_port[month_key] = w.reindex(aktien, fill_value=0.0)
+     
     # Speicherung
-    portfolio_input[str(folgemonat.date())] = {
+    portfolio_features[str(folgemonat.date())] = {
         "Korrelation": corr,
         "Abstand": dist
     }
-

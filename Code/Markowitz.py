@@ -5,51 +5,54 @@ import Daten as da
 from dateutil.relativedelta import relativedelta
 
 
-daily_returns = da.daily_returns
-valid_stocks = da.valid_stocks
+# aktien : Die Liste der Aktien, die im Portfolio sind (Liste von Strings)
+# rendite_tag: Log-Rendite
+rendite_tag = da.rendite_tag
+aktien = da.aktien20_98
+
 # ------------------------------------------------------------
 #  5. Für jeden Monat Erwartungswert & Kovarianzmatrix (letzte 6 Monate)
 # ------------------------------------------------------------
 # Erster Folgemonat (Optimierungsziel) ist jetzt 2000-01-01
-months = pd.date_range(start="2000-01-01", end="2024-12-01", freq="MS") # <-- ZURÜCK AUF 2000-01-01
-portfolio_input = {}
-lookback_months = 6  # Zeitraum für Schätzung (UNVERÄNDERT)
+monate = pd.date_range(start="2004-01-01", end="2024-12-01", freq="MS") # <-- ZURÜCK AUF 2000-01-01
+portfolio_features = {}
+rueck = 6  # Zeitraum für Schätzung (UNVERÄNDERT)
 
-for folgemonat in months:
-    start_window = folgemonat - relativedelta(months=lookback_months)
+for folgemonat in monate:
+    start_rueck = folgemonat - relativedelta(months=rueck)
     
     # Filter: Tagesrenditen der letzten 6 Monate vor dem Folgemonat
-    prev_window_returns = daily_returns[
-        (daily_returns["Date"] >= start_window) &
-        (daily_returns["Date"] < folgemonat)
-    ][valid_stocks]
+    hist_daten = rendite_tag[
+        (rendite_tag["Date"] >= start_rueck) &
+        (rendite_tag["Date"] < folgemonat)
+    ][aktien]
 
-    if prev_window_returns.empty:
+    if hist_daten.empty:
         continue
     
     # ... (Rest der Schätzung bleibt unverändert) ...
 
     # --- Schätzung unter Normalverteilungsannahme ---
-    mu_log = prev_window_returns.mean()
-    sigma2_log = prev_window_returns.var()
+    mu_log = hist_daten.mean()
+    sigma2_log = hist_daten.var()
 
     # Erwarteter arithmetischer Return unter lognormaler Annahme
-    mu_expected = np.exp(mu_log + 0.5 * sigma2_log) - 1
+    #mu_arith = np.exp(mu_log + 0.5 * sigma2_log) - 1
 
-    # Kovarianzmatrix der log-returns
-    cov_mat = prev_window_returns.cov()
+    # Kovarianzmatrix der Log-returns
+    cov_mat = hist_daten.cov()
 
     # Speicherung
-    portfolio_input[str(folgemonat.date())] = {
-        "mu": mu_expected,
+    portfolio_features[str(folgemonat.date())] = {
+        "mu": mu_log,
         "cov": cov_mat
     }
 
 # Beispiel-Ausgabe
-first_key = list(portfolio_input.keys())[0]
+first_key = list(portfolio_features.keys())[0]
 print(f"Beispielmonat: {first_key}")
-print("Erwartete Renditen:\n", portfolio_input[first_key]["mu"].head())
-print("\nKovarianzmatrix (Ausschnitt):\n", portfolio_input[first_key]["cov"].iloc[:5, :5])
+print("Erwartete Renditen:\n", portfolio_features[first_key]["mu"].head())
+print("\nKovarianzmatrix (Ausschnitt):\n", portfolio_features[first_key]["cov"].iloc[:5, :5])
 
 
 
@@ -57,19 +60,16 @@ print("\nKovarianzmatrix (Ausschnitt):\n", portfolio_input[first_key]["cov"].ilo
 #                               Optimierung
 # -----------------------------------------------------------------------------
 
-# cvxopt Einstellungen: keine Ausgabe bei der Optimierung
-solvers.options['show_progress'] = False
-
-# Liste für Portfolios
+# Dictionary für Portfolios
 minvar_portfolios = {}
 
-# Alle Monate aus portfolio_input (Startet jetzt mit 2000-01-01)
-all_months = list(portfolio_input.keys())
+# Alle Monate aus portfolio_features (Startet jetzt mit 2000-01-01)
+monate = list(portfolio_features.keys())
 
 #  Schleife über ALLE Monate (ab 2000-01-01) - direkte Optimierung
-for month in all_months: # <-- ÄNDERUNG HIER: Schleife startet beim ersten verfügbaren Monat
-    mu = portfolio_input[month]['mu'].values       # Erwartete Renditen
-    cov_mat = portfolio_input[month]['cov'].values # Kovarianzmatrix
+for monat in monate: # <-- ÄNDERUNG HIER: Schleife startet beim ersten verfügbaren Monat
+    mu = portfolio_features[monat]['mu'].values       # Erwartete Renditen
+    cov_mat = portfolio_features[monat]['cov'].values # Kovarianzmatrix
     n = len(mu)
 
     # --- Regularisierung falls Kovarianzmatrix nicht positiv definit ---
@@ -92,16 +92,14 @@ for month in all_months: # <-- ÄNDERUNG HIER: Schleife startet beim ersten verf
     
     # Optimierung
     sol = solvers.qp(P, q, G, h, A, b)
-    weights = np.array(sol['x']).flatten()
+    gewicht = np.array(sol['x']).flatten()
     
     # Kleine Rundungsfehler eliminieren
-    weights[weights < 1e-12] = 0
+    gewicht[gewicht < 1e-12] = 0
     
     # Speichern als Pandas Series
-    minvar_portfolios[month] = pd.Series(weights, index=portfolio_input[month]['mu'].index)
+    minvar_portfolios[monat] = pd.Series(gewicht, index=portfolio_features[monat]['mu'].index)
 
 # Beispielausgabe
-example_month = all_months[0] # <-- Beispiel zeigt jetzt den ersten optimierten Monat (2000-01-01)
-print(f"MinVar Portfolio für {example_month}:")
-
-print(minvar_portfolios[example_month])
+example_month = monate[0] # <-- Beispiel zeigt jetzt den ersten optimierten Monat (2000-01-01)
+print(f"\nMinVar Portfolio für {example_month}: \n", minvar_portfolios[example_month])
