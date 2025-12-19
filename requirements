@@ -1,2 +1,6 @@
 Benötigte Python Frameworks:
 
+- Pandas
+-Scipy
+-Cvxopt
+- Base Conda enviroment
