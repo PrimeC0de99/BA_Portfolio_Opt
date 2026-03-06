@@ -28,7 +28,7 @@ daten_20_erweitert = daten_20[daten_20["Date"] >= start_lookback].copy()
 # ------------------------------------------------------------
 rendite_tag = daten_20_erweitert.copy() # <-- Basis ist jetzt der erweiterte Datensatz
 rendite_tag[aktien20_98] = np.log(rendite_tag[aktien20_98] / rendite_tag[aktien20_98].shift(1))
-rendite_tag = rendite_tag.dropna() # Entfernt die erste Zeile (Rendite vom 02.07.1999 ist die erste)
+rendite_tag = rendite_tag.dropna()
 
 
 # Daten_20_erweitert sind die Daten der 20 Aktien ab dem Jahr 2000 (und das halbe Jahr davor für das erste Portfolio)
