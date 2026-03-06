@@ -15,6 +15,14 @@ daily_returns = Daten_20_extended.copy()    # <-- Basis ist jetzt der erweiterte
 daily_returns[aktien] = (daily_returns[aktien] / daily_returns[aktien].shift(1)) - 1
 daily_returns = daily_returns.dropna()      # Entfernt die erste Zeile (Rendite vom 02.07.1999 ist die erste)
 
+
+# Vorschlag umd dieses .shift(1) nicht nutzen zu müssen. .pct_change() macht wohl das Gleiche nur bisschen besser
+# -----------------------------------------------------------------------------
+# Berechne die prozentuale Veränderung nur für die Aktien-Spalten
+daily_returns[aktien] = daily_returns[aktien].pct_change()
+# -----------------------------------------------------------------------------
+
+
 # tägliche Renditen ab dem Jahr 2004
 daily_returns2004 = daily_returns.loc[daily_returns['Date'] >= '2004-01-01', ['Date'] + aktien]
 print('\n Tägliche Renditen ab 2004: \n', daily_returns2004.head(10))
@@ -53,4 +61,6 @@ So kann man prüfen welches Portfolio in einem bestimmten Zeitraum besser perfor
 Aber natürlich auch die Varianz über den gesamten Zeitraum bestimmen (für die generelle Performance).
 
 Ggf. von monatlicher Allokation auf halbjährlich wechseln?
+
+Das Sharpe-Ratio ist auch eine sehr gute Kennzahl für den Modellvergleich. Unbedingt abchecken!
 '''
