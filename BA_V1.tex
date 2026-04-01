@@ -51,7 +51,7 @@
 \begin{center}
 \begin{tabular}{lll}
 	\textbf{Erstprüfer:} & & Prof. Dr. Anselm Hudde \\
-	\textbf{Zweitprüfer:} & & Prof. Dr. Claus Neidhardt \\
+	\textbf{Zweitprüfer:} & & Prof. Dr. Martina Brück \\
 	\\ % & springt in die nächste Spalte der Tabelle
 	\textbf{Durchgeführt bei:} & & Hochschule Koblenz
 \end{tabular}
@@ -60,7 +60,7 @@
 \vspace{2cm}
 
 \begin{center}
-	\large {21. September 1999}
+	\large {30. Juni 2026}
 \end{center}
 \clearpage
 \setcounter{page}{1}
@@ -69,21 +69,33 @@
 \tableofcontents
 \clearpage
 
+\listoffigures
+\clearpage
+
+\listoftables
+\clearpage
+
+\section*{Symbolverzeichnis}
+
+
+
+\clearpage
+
 % \pagenumbering{arabic} <- arabische Zahlen als Nummerierung
 \setcounter{page}{1}
 \pagenumbering{arabic}
 
 	Hierarchical Risk Parity
 	\section{Einleitung}
-	Nach mehr als 7 Jahrzehnten ist nach wie vor Markowitz das vorherrschende Optimierungsverfahren in der Portfolioallokation. Es liefert zwar gute Ergebnisse, doch weist auch signifikante Schwächen auf. Das Verfahren reagiert empfindlich auf Schätzfehler in den Eingangsparametern und es neigt dazu wenige schwach volatile Aktien stark zu gewichten. Das sind 2 Eigenschaften, die zu nicht optimalen Ergebnissen führen können und unter gewissen Marktsituation nicht gewollt sind. \\ \\
+	Nach mehr als sieben Jahrzehnten ist nach wie vor Markowitz das vorherrschende Optimierungsverfahren in der Portfolioallokation. Es liefert zwar gute Ergebnisse, doch weist auch signifikante Schwächen auf. Das Verfahren reagiert empfindlich auf Schätzfehler in den Eingangsparametern und es neigt dazu wenige schwach volatile Aktien stark zu gewichten. Das sind zwei Eigenschaften, die zu nicht optimalen Ergebnissen führen können und unter gewissen Marktsituation nicht gewollt sind. \\ \\
 	Der Fortschritt im Bereich des Machine Learnings ermöglicht Verfahren, die diese Schwächen nicht mehr aufweisen oder wo diese Schwächen zumindest weniger stark ausgeprägt sind. Marcos Lopez de Prado hat das HRP-Verfahren (Hierarchical Risk Parity) entwickelt, welches Baummodelle nutzt um die Empfindlichkeit gegenüber den Schätzfehlern zu verbessern. Das kann insbesondere bei der Bestimmung eines Minimum-Varianz-Portfolios die Ergebnisse verbessern. \\ \\
-	Meine Arbeit beschäftigt sich daher mit dem Vergleich der 2 genannten Modelle und der Frage, ob HRP bessere Ergebnisse liefert als die klassische Markowitz-Optimierung. \\
-	Hierfür betrachte ich ein Portfolio bestehend aus 20 am DAX gelisteten Aktien über die letzten 20 Jahre. \\
+	Meine Arbeit beschäftigt sich daher mit dem Vergleich der zwei genannten Modelle und der Frage, ob HRP bessere Ergebnisse liefert als die klassische Markowitz-Optimierung. \\
+	Hierfür betrachte ich ein Portfolio bestehend aus 30 Aktien über die letzten 20 Jahre. \\
 	
 	
 	\clearpage
 	\section{Theoretische Grundlagen}
-	Um das Optimierungsverfahren nach Markowitz und das HRP-Modell zu untersuchen ist es zunächst notwendig, die theoretischen Grundlagen zu klären:
+	Um das Optimierungsverfahren nach Markowitz und das HRP-Modell zu untersuchen ist es zunächst notwendig, die theoretischen Grundlagen zu klären.
 	\subsection{Rendite}
 	Die Rendite beschreibt die relative Wertänderung eines Investments bezogen auf den investierten Kapitalwert am Anfang des Betrachtungszeitraums:
 	
@@ -202,7 +214,7 @@
 	
 	Hat ein Investor die Wahl zwischen Investment $B$ und Investment $C$, so entscheidet er sich für $B$. Denn Investment $B$ hat die gleiche erwartete Rendite wie $C$, gleichzeitig aber ein geringeres Risiko.
 	
-	Muss er jedoch ein Auswahl zwischen Investment $A$ und Investment $C$ treffen, so entscheidet er sich für $A$. Investment $A$ liefert nämlich bei gleichem Risiko eine höhere erwartete Rendite.
+	Muss er jedoch eine Auswahl zwischen Investment $A$ und Investment $C$ treffen, so entscheidet er sich für $A$. Investment $A$ liefert nämlich bei gleichem Risiko eine höhere erwartete Rendite.
 	
 	\clearpage
 	
@@ -345,7 +357,7 @@
 	\subsection{Das Optimierungsverfahren}
 	Nachdem der effiziente Rand die Menge aller theoretisch optimalen Portfolios definiert hat, besteht die praktische Aufgabe darin, das spezifisch für einen Investor optimale Portfolio auf dem effizienten Rand zu identifizieren. Dieser Prozess der Portfolio-Allokation wird als quadratisches Optimierungsproblem unter Nebenbedingungen formuliert.
 	
-	In dieser Arbeit möchten wir den Fokus auf die Risikominimierung legen, weshalb wir als Zielfunktion die vorher definierte Portfoliovarianz (vgl.Gl.\eqref{eq:portfoliovarianz}) wählen
+	In dieser Arbeit liegt der Fokus auf der Risikominimierung, weshalb als Zielfunktion die vorher definierte Portfoliovarianz (vgl.Gl.\eqref{eq:portfoliovarianz}) dient
 	
 	\begin{equation}
 		\min_w \sigma_p^2 = w^T \Sigma w . \label{eq:zielfunktion}
@@ -354,27 +366,25 @@
 	\textbf{Bemerkung:}
 	Alternativ könnte man als Zielfunktion einen Term wählen, der auch die Rendite enthält. Um bspw. Renditeziele vorzugeben und mit einem Risikoaversionparameter anzugeben, wie viel Risiko man bereit ist einzugehen. Diese Alternative Zielfunktion lautet
 	
-	\begin{equation*}
+	\begin{equation}
 		V(N) = \mu_p - \lambda \cdot \sigma_p^2 .
-	\end{equation*}
+	\end{equation}
 	
 	\clearpage
 	
-	Unser Optimierungsproblem \eqref{eq:zielfunktion} wäre trivialer Weise mit $w_i = 0$ gelöst. Da das Risiko am geringsten ist wenn wir in gar keine Aktie investieren, denn dann gilt $\sigma_p^2 = 0$. Weshalb wir Nebenbedingungen formulieren müssen.
+	Das Optimierungsproblem \eqref{eq:zielfunktion} wäre trivialer Weise mit $w_i = 0$ gelöst. Da das Risiko am geringsten ist wenn wir in gar keine Aktie investieren, denn dann gilt $\sigma_p^2 = 0$. Weshalb man Nebenbedingungen formulieren muss.
 	
-	Die erste Nebenbedingungen ist die \textbf{Budgetrestriktion}. Hiermit stellen wir sicher dass unser gesamtes Kapital investiert wird. Außerdem wollen wir nicht über unser Kapital hinaus gehen, also keine Kredite aufnehmen. Die erste Nebenbedingung lautet also
+	Die erste Nebenbedingungen ist die \textbf{Budgetrestriktion}. Hiermit stellt man sicher dass das gesamte Kapital investiert wird. Außerdem will man nicht über das Gesamtkapital hinaus gehen, also keine Kredite aufnehmen. Die erste Nebenbedingung lautet also
 	
 	\begin{equation}
 		\sum_{i=1}^{n} w_i = 1 . \label{eq:budgetrestriktion}
 	\end{equation}
 	
-	Neben der Budgetrestriktion benötigen wir in dieser Arbeit auch eine Nebenbedingung die Leerverkäufe ausschließt. Hierfür nutzen wir eine \textbf{Nicht-Negativitäts-Bedingung}. Wir möchten also das stets
+	Neben der Budgetrestriktion wird in dieser Arbeit auch eine Nebenbedingung die Leerverkäufe ausschließt benötigt. Hierfür nutzt man eine \textbf{Nicht-Negativitäts-Bedingung}. Es soll also stets gelten
 	
 	\begin{equation}
 		w_i \geq 0 \quad \text{für alle } i = 1, ..., n \label{eq:nicht-negativ}
 	\end{equation}
-	
-	gilt.
 	
 	Da die Kovarianzmatrix $\Sigma$ per Definition positiv definit ist, handelt es sich um ein konvexes Optimierungsproblem mit linearen Nebenbedingungen. Für solche Probleme existiert eine eindeutige Lösung. Das aus der Lösung resultierende Portfolio nennen wir \textbf{Minimum-Varianz-Portfolio} (MVP).
 	
@@ -386,7 +396,7 @@
 		L(w,\lambda) = \operatorname{Zielfunktion} - \lambda \cdot (\operatorname{Nebenbedingung} = 0) . \label{eq:lagrange}
 	\end{equation}
 	
-	Unsere Zielfunktion haben wir in \eqref{eq:zielfunktion} bereits definiert. Die Budgetrestriktion nach 0 umgestellt lautet $\sum_{i=1}^{n} w_i - 1$. Also erhalten wir für die Lagrange-Funktion den Ausdruck
+	Die Zielfunktion wurde in \eqref{eq:zielfunktion} bereits definiert. Die Budgetrestriktion nach null umgestellt lautet $\sum_{i=1}^{n} w_i - 1$. Also erhält man für die Lagrange-Funktion den Ausdruck
 	
 	\begin{equation*}
 		L(w,\lambda) = w^T \Sigma w - \lambda (\mathbf{1}^T w-1) .
@@ -414,13 +424,13 @@
 		\mathbf{1}^T \left(\frac{1}{2} \lambda \Sigma^{-1} \mathbf{1} \right) = 1.
 	\end{equation*}
 	
-	$\frac{1}{2} \lambda$ ist eine Skalar, weshalb wir es nach vorne ziehen können. Stellen wir die gesamten Gleichung jetzt nach genau diesem Skalar um, so erhalten wir
+	$\frac{1}{2} \lambda$ ist eine Skalar, weshalb man es in der Gleichung nach vorne ziehen kann. Stellen wir die gesamten Gleichung jetzt nach genau diesem Skalar um, so erhalten wir
 	
 	\begin{equation*}
 		\frac{1}{2} \lambda = \frac{1}{\mathbf{1}^T \Sigma^{-1} \mathbf{1}}
 	\end{equation*}
 	
-	Setzen wir diesen Term nun in die Gleichung \eqref{eq:w_struktur} ein, erhalten wir für die Gewichte des Minimum-Varianz-Portfolios die Gleichung
+	Setzt man diesen Term nun in die Gleichung \eqref{eq:w_struktur} ein, erhält man für die Gewichte des Minimum-Varianz-Portfolios die Gleichung
 	
 	\begin{equation}
 		w_{MVP} = \frac{\Sigma^{-1}\mathbf{1}}{\mathbf{1}^T \Sigma^{-1} \mathbf{1}} . \label{eq:w_mvp}
@@ -428,13 +438,13 @@
 	
 	% Evtl. in diesem Satz nochmal das genau Kapitel erwähnen, wo die Bezugnahme statt findet.
 	
-	Wir sehen also, dass die Gewichte unseres Minimum-Varianz-Portfolios direkt von der Inversen der Kovarianzmatrix abhängen. Auf diese Eigenschaft werden wir in einem späteren Kapitel noch einmal Bezug nehmen.
+	Man sieht also, dass die Gewichte des Minimum-Varianz-Portfolios direkt von der Inversen der Kovarianzmatrix abhängen. Auf diese Eigenschaft wird in einem späteren Kapitel noch einmal Bezug genommen werden.
 	
-	\textbf{KKT-Bedingungen für das Portfolioproblem: }		%Überschrift nochmal überdenken!!!
+	\textbf{KKT-Bedingungen für das Portfolioproblem:}	
 	
-	Das Optimierungsverfahren wie wir es bisher betrachtete haben, berücksichtigt nur die Budgetrestriktion. Allerdings möchten wir in dieser Arbeit Leerverkäufe ausschließen. Nehmen wir also diese Nebenbedingung hinzu, können wir nicht mehr so einfach eine analytische Lösungen für das Minimum-Varianz-Portfolio bestimmen. Denn wir haben dann zusätzlich noch eine Ungleichheitsnebenbedingung \eqref{eq:nicht-negativ}. Um dieses Optimierungsproblem zu lösen erweitern wie die Langrange-Gleichung mithilfe der Kuhn-Tucker-Bedinungen.
+	Das Optimierungsverfahren wie es bisher betrachtet wurde, berücksichtigt nur die Budgetrestriktion. Allerdings möchten wir in dieser Arbeit Leerverkäufe ausschließen. Nimmt man also diese Nebenbedingung hinzu, kann man nicht mehr so einfach eine analytische Lösungen für das Minimum-Varianz-Portfolio bestimmen. Denn es existiert dann zusätzlich noch eine Ungleichheitsnebenbedingung \eqref{eq:nicht-negativ}. Um dieses Optimierungsproblem zu lösen wird die Langrange-Gleichung um die der Kuhn-Tucker-Bedinungen erweitert.
 	
-	Allgemein erhalten wir für die Langrange-Gleichung mit Kuhn-Tucker den Ausdruck
+	Allgemein erhält man für die Langrange-Gleichung mit Kuhn-Tucker den Ausdruck \parencite[260]{Nickel}
 	
 	\begin{equation}
 		L(w, \lambda, \delta) = f(w) + \sum_{i=1}^{l} \lambda_i \cdot h_i(w) + \sum_{j=1}^{m} \delta_j \cdot g_j(w) . \label{eq:langrange_kkt}
@@ -443,7 +453,7 @@
 	$h$ beschreibt in dieser Gleichung die nach null umgestellten Gleichheitsnebenbedingungen und $g$ beschreibt die nach null umgestellten Ungleichheitsnebenbediungen.
 	
 	
-	Um nun den Vektor der optimalen Portfoliogewichte zu bestimmen, müssen die folgenden Kuhn-Tucker-Bedingungen erfüllt sein
+	Um nun den Vektor der optimalen Portfoliogewichte zu bestimmen, müssen die folgenden Kuhn-Tucker-Bedingungen erfüllt sein \parencite[260]{Nickel}
 	
 	\begin{equation}
 		\nabla L = \nabla f(w^*) + \sum_{i=1}^{l} \lambda_i \nabla h_i(w^*) + \sum_{j=1}^{m} \delta_j \nabla g_j (w^*) = 0 .
@@ -458,8 +468,6 @@
 		\item $\delta_j \cdot g_j(w^*) = 0 \quad \forall j=1, ..., m$ .
 	\end{enumerate}
 	
-	% Quelle für KKT! ca. Seite 260 im Bucht 'Operations Research'
-	
 	Die erweiterte Langrange-Gleichung für das in dieser Arbeit betrachtete Minimum-Varianz-Portfolio lautet also
 	
 	\begin{equation}
@@ -468,17 +476,17 @@
 	
 	\textbf{Numerische Lösung des Optimierungsproblems: }
 	
-	Ein solches Optimierungsproblem können wir numerisch mithilfe des Critical-Line-Algorithmus (CLA) lösen. Die Idee des CLA besteht darin, den effizienten Rand nicht durch unzählige Einzelberechnungen zu schätzen, sondern ihn systematisch durch die Identifikation von sogenannten Eckportfolios (Corner Portfolios) exakt zu konstruieren. Diese Eckportfolios sind genau die Punkte, an denen entweder eine Aktie die Nullschranke erreicht und aus dem Portfolio ausscheidet oder eine Aktie neu in das Portfolio aufgenommen wird. Durch dieses sukzessive Abwandern des effizienten Randes liefert der CLA eine exakte Lösung für das Minimum-Varianz-Portfolio und berücksichtigt dabei alle Ungleichheitsrestriktionen.
+	Ein solches Optimierungsproblem kann man numerisch mithilfe des Critical-Line-Algorithmus (CLA) lösen. Die Idee des CLA besteht darin, den effizienten Rand nicht durch unzählige Einzelberechnungen zu schätzen, sondern ihn systematisch durch die Identifikation von sogenannten Eckportfolios (Corner Portfolios) exakt zu konstruieren. Diese Eckportfolios sind genau die Punkte, an denen entweder eine Aktie die Nullschranke erreicht und aus dem Portfolio ausscheidet oder eine Aktie neu in das Portfolio aufgenommen wird. Durch dieses sukzessive Abwandern des effizienten Randes liefert der CLA eine exakte Lösung für das Minimum-Varianz-Portfolio und berücksichtigt dabei alle Ungleichheitsrestriktionen.
 	
 	\subsection{Kritik am Markowitz-Modell}
 	
 	Obwohl der Critical-Line-Algorithmus das Minimum-Varianz-Portfolio exakt berechnet, gibt es berechtigte Kritik am Modell von Markowitz. Die Probleme liegen dabei nicht in der Rechenmethode selbst, sondern in der Beschaffenheit der Eingangsdaten. 
 	
-	Wir haben bereits in Gleichung \eqref{eq:w_mvp} gesehen, dass unsere Portfoliogewichte direkt mit der Inversen der Kovarianzmatrix zusammenhängen. Da diese Matrix allerdings, wie wir später noch sehen werden, numerisch sehr instabil ist, führt eine kleine Fehlschätzung der Varianzen bzw. Kovarianzen zu großen Veränderungen im Gewichtsvektor. Da wir alle Einträge der Kovarianzmatrix aus historischen Daten schätzen, kann dies zu Problemen führen.
+	Es wurde bereits in Gleichung \eqref{eq:w_mvp} gezeigt, dass die Portfoliogewichte direkt mit der Inversen der Kovarianzmatrix zusammenhängen. Da diese Matrix allerdings, wie wir später noch sehen werden, numerisch sehr instabil ist, führt eine kleine Fehlschätzung der Varianzen bzw. Kovarianzen zu großen Veränderungen im Gewichtsvektor. Da alle Einträge der Kovarianzmatrix aus historischen Daten geschätzt werden, kann dies zu Problemen führen.
 	
-	Ein weiteres Problem ist, dass Markowitz dazu neigt die Gewichte zu "konzentrieren". Das bedeutet, dass wenige Aktien stark gewichtet werden, während viele andere Aktien mit einem Gewicht von null versehen werden. Das Modell neigt dazu hoch volatile Aktien mit null zu gewichten, was natürlich im ersten Moment logisch erscheint, denn wir wollen ja eigentlich ein Portfolio mit möglichst geringer Volatilität (MVP). Doch dieses Verhalten steht im Konflikt mit dem Diversifikationsgedanken. Denn das Ziel eines Anlegers ist es das Risiko auf mehrere Aktien zu verteilen. 
+	Ein weiteres Problem ist, dass Markowitz dazu neigt die Gewichte zu "konzentrieren". Das bedeutet, dass wenige Aktien stark gewichtet werden, während viele andere Aktien mit einem Gewicht von null versehen werden. Das Modell neigt dazu hoch volatile Aktien mit null zu gewichten, was natürlich im ersten Moment logisch erscheint, denn man will ja eigentlich ein Portfolio mit möglichst geringer Volatilität (MVP). Doch dieses Verhalten steht im Konflikt mit dem Diversifikationsgedanken. Denn das Ziel eines Anlegers ist es das Risiko auf mehrere Aktien zu verteilen. 
 	
-	Der letzte Kritikpunkt am Markowitz-Modell, den wir hier betrachten wollen ist, dass dieses Modell die Kovarianzen der Vergangenheit betrachtet. Oft sind die Kovarianzen zwischen zwei Aktien aber keine konstanten Werte, sondern sie verändern sich mit der Zeit. D.h. die Annahme dass die Kovarianzen zwischen den Aktien immer den Kovarianzen des vorherigen Zeitraums entsprechen ist in der Praxis häufig falsch. Hierbei handelt es sich aber um eine notwendige Modellannahme, denn wir können die Kovarianzen der Zukunft nicht vorhersagen.
+	Der letzte Kritikpunkt am Markowitz-Modell, der hier betrachtet wird, ist, dass dieses Modell die Kovarianzen der Vergangenheit betrachtet. Oft sind die Kovarianzen zwischen zwei Aktien aber keine konstanten Werte, sondern sie verändern sich mit der Zeit. D.h. die Annahme dass die Kovarianzen zwischen den Aktien immer den Kovarianzen des vorherigen Zeitraums entsprechen ist in der Praxis häufig falsch. Hierbei handelt es sich aber um eine notwendige Modellannahme, denn man kann die Kovarianzen der Zukunft nicht vorhersagen.
 	
 	Zusammenfassend lässt sich festhalten, dass die klassische Portfolio-Optimierung nach Markowitz trotz ihrer mathematischen Eleganz signifikante Schwächen in der Praxis aufweist. Weshalb wir uns im nächsten Kapitel mit einem alternativen Modell beschäftigen, dem \textbf{Hierachical-Risk-Parity-Modell}.
 	
@@ -488,7 +496,7 @@
 	
 	Um die im letzten Kapitel angesprochenen Schwächen der klassischen Portfolio-Optimierung zu umgehen, hat Marcos López de Prado im Jahr 2016 das Hierarchical-Risk-Parity-Modell entwickelt. Dieses Modell verzichtet komplett auf die Matrixinversionen. Stattdessen nutzt HRP Methoden des maschinellen Lernens, um die hierarchische Korrelationsstruktur der Assets abzubilden und für die Gewichtung zu nutzen.
 	
-	Der HRP-Agorithmus lässt sich in 3 Phasen unterteilen:
+	Der HRP-Agorithmus lässt sich in drei Phasen unterteilen:
 	
 	\begin{enumerate}
 		\item Das \textbf{hierarchische Clustering}, um die Ähnlichkeitsstruktur der Assets zu bestimmen
@@ -500,7 +508,7 @@
 	
 	Der erste Schritt des Modells besteht darin die Assets in einer hierarchischen Baumstruktur anzuordnen. Die Idee hierbei ist, dass die Assets keine homogene Masse sind, sondern es eine natürliche Gruppierung von Assets gibt die sich ähnlich verhalten (bspw. alle Aktien der Automobilbranche).
 	
-	Um diese Struktur mathematisch zu erfassen wird zunächst die Korrelationsmatrix $R$ der Renditen betrachtet \eqref{eq:korrelationsmatrix}. Aus dieser Korrelationsmatrix leiten wir die Distanzmatrix ab. Hierfür nutzen wir die Metrik \parencite[224]{Lopez}
+	Um diese Struktur mathematisch zu erfassen wird zunächst die Korrelationsmatrix $R$ der Renditen betrachtet \eqref{eq:korrelationsmatrix}. Aus dieser Korrelationsmatrix leitet man die Distanzmatrix ab. Hierfür nutzt man die Metrik \parencite[224]{Lopez}
 	
 	\begin{equation}
 		d_{i,j} = \sqrt{\frac{1}{2} (1- \rho_{i,j})} . \label{eq:dist_metrik}
@@ -523,7 +531,7 @@
 	
 	\subsection{Quasi-Diagonalisierung}
 	
-	Die aus dem Clustering gewonnene Sequenz nutzen wir jetzt für die Quasi-Diagonalisierung. Bei diesem Schritt geht es darum die Zeilen und Spalten der ursprünglichen Korrelationsmatrix so anzuordnen, dass stark korrelierende Aktien (bzw. Aktien mit einer geringen Distanz) in der Matrix nebeneinander angeordnet sind. Durch diese neue Ordnung konzentrieren sich die hohen Korrelationen um die Hauptdiagonale der Matrix. Weshalb man dieses Vorgehen als \textbf{Quasi-Diagonalisierung} bezeichnet. Im Gegensatz zur Markowitz-Optimierung, ist in diesem Schritt keine Matrixinversion nötig. Das macht diesen Schritt numerisch stabiler.
+	Die aus dem Clustering gewonnene Sequenz nutzt man jetzt für die Quasi-Diagonalisierung. Bei diesem Schritt geht es darum die Zeilen und Spalten der ursprünglichen Korrelationsmatrix so anzuordnen, dass stark korrelierende Aktien (bzw. Aktien mit einer geringen Distanz) in der Matrix nebeneinander angeordnet sind. Durch diese neue Ordnung konzentrieren sich die hohen Korrelationen um die Hauptdiagonale der Matrix. Weshalb man dieses Vorgehen als \textbf{Quasi-Diagonalisierung} bezeichnet. Im Gegensatz zur Markowitz-Optimierung, ist in diesem Schritt keine Matrixinversion nötig. Das macht diesen Schritt numerisch stabiler.
 	% Im Gegensatz zur klassischen Markowitz-Optimierung ist für diesen Schritt keine Inversion der Matrix notwendig, was das Modell besonders robust gegenüber Multikollinearität macht
 	
 	\subsection{Recursive Bisection}
@@ -532,7 +540,7 @@
 	
 	\textbf{Bestimmung der Gewichte: }
 	
-	Unser Portfolio wird zunächst in zwei Cluster unterteilt. Für die zwei Teilcluster $C_1$ und $C_2$ wird Varianz bestimmt. Dabei wird innerhalb der Cluster eine \textbf{Inverse-Variance-Gewichtung} (IVP) unterstellt:
+	Das Portfolio wird zunächst in zwei Cluster unterteilt. Für die zwei Teilcluster $C_1$ und $C_2$ wird die Varianz bestimmt. Dabei wird innerhalb der Cluster eine \textbf{Inverse-Variance-Gewichtung} (IVP) unterstellt:
 	
 	\begin{equation}
 		Var(C_i) = g_i^T \Sigma_i g_i . \label{eq:ivp}
@@ -544,19 +552,17 @@
 		g_k = \frac{\frac{1}{\sigma_k^2}}{\sum_{j \in C_i} \frac{1}{\sigma_j^2}} . \label{eq:ivp_weights}
 	\end{equation}
 	
-	Um also die Komponenten für $g_i$ zu bestimmen, nehmen wir den Kehrwert der Varianz des k-ten Assets und teilen diesen Wert durch die Summe der Kehrwerte aller Assets, die sich in diesem Cluster befinden.
+	Um also die Komponenten für $g_i$ zu bestimmen, nimmt man den Kehrwert der Varianz des k-ten Assets und teilen diesen Wert durch die Summe der Kehrwerte aller Assets, die sich in diesem Cluster befinden.
 	
-	Die Gewichte zwischen den Clustern berechnen wir als
+	Die Gewichte zwischen den Clustern berechnet man als
 	
 	\begin{equation}
 		\alpha = 1 - \frac{Var(C_1)}{Var(C_1) + Var(C_2)} . 
 	\end{equation}
 	
-	Das Cluster $C_1$ erhält den Anteil $\alpha$ während das Cluster $C_2$ den Anteil $(1 - \alpha)$ erhält. Diesen Prozess wiederholen wir so lange bis jedes Asset ein finales Gewicht zugeordnet bekommen hat.
+	Das Cluster $C_1$ erhält den Anteil $\alpha$ während das Cluster $C_2$ den Anteil $(1 - \alpha)$ erhält. Diesen Prozess wiederholt man so lange bis jedes Asset ein finales Gewicht zugeordnet bekommen hat.
 	
-	Dieses rekursive Verfahren können wir uns nun Anhand des in Abbildung \ref{fig:dendrogramm_5} vorgestellten Beispiels mit den fünf DAX-Aktien verdeutlichen.
-	
-	% Vielleicht nochmal den letzten Satz hier überdenken, da ggf. keine Aufzählung dannach kommt
+	Dieses rekursive Verfahren kann man sich nun Anhand des in Abbildung \ref{fig:dendrogramm_5} vorgestellten Beispiels mit den fünf DAX-Aktien verdeutlichen.
 	
 	\clearpage
 	
@@ -570,19 +576,19 @@
 		\item \textbf{Finale Ebene:} In der untersten Hierarchiestufe wird das Kapital innerhalb der eng verwandten Paare verteilt. Das für den Automobil-Sektor reservierte Kapital wird zwischen BMW und Mercedes aufgeteilt; analog wird das Kapital des Chemie-Clusters zwischen BASF und Bayer partitioniert.
 	\end{enumerate}
 	
-	Diese Vorgehensweise verdeutlicht den entscheidenden Vorteil der {Recursive Bisection}: Das Risiko wird zunächst zwischen ökonomisch unterschiedlichen Sektoren (Automobil vs. Finanzen/Chemie) gestreut. Erst innerhalb dieser stabilen Blöcke findet die Feinverteilung auf die Einzelwerte statt. Dies verhindert, dass hohe Korrelationen zwischen ähnlichen Aktien – wie etwa BMW und Mercedes – zu einer instabilen Übergewichtung eines einzelnen Titels führen, wie es bei der klassischen Mittelwert-Varianz-Optimierung oft der Fall ist.
+	Diese Vorgehensweise verdeutlicht den entscheidenden Vorteil der {Recursive Bisection}: Das Risiko wird zunächst zwischen ökonomisch unterschiedlichen Sektoren (Automobil vs. Finanzen/Chemie) gestreut. Erst innerhalb dieser stabilen Blöcke findet die Feinverteilung auf die Einzelwerte statt. Dies verhindert, dass hohe Korrelationen zwischen ähnlichen Aktien – wie etwa BMW und Mercedes – zu einer instabilen Übergewichtung eines einzelnen Titels führen, wie es bei der klassischen Rendite-Varianz-Optimierung oft der Fall ist.
 	
 	% Ende Gemini Text
 	
 	\subsection{Fazit zu HRP}
 	
-	Zusammenfassend kann man festhalten, dass das Hierarchical-Risk-Parity-Modell von Marcos López de Prado eine Brücke zwischen der klassischen Portfoliotheorie und dem maschinellen Lernen schlägt. Durch den Verzicht auf die Inversion von Matrizen und die Konzentration auf die hierarchische Struktur wird eine höhere Robustheit gegen Schätzfehler in den Inputparametern angestrebt. Ob sich diese theoretischen Vorteilen in der Praxis bewähren, wird im folgenden Kapitel mit einem Portfolio aus 20 am DAX gehandelten Aktien empirisch untersucht. Dabei wird insbesondere die Konditionszahl als Maß für die numerische Stabilität im Vergleich zur klassischen Optimierung herangezogen.
+	Zusammenfassend kann man festhalten, dass das Hierarchical-Risk-Parity-Modell von Marcos López de Prado eine Brücke zwischen der klassischen Portfoliotheorie und dem maschinellen Lernen schlägt. Durch den Verzicht auf die Inversion von Matrizen und die Konzentration auf die hierarchische Struktur wird eine höhere Robustheit gegen Schätzfehler in den Inputparametern angestrebt. Ob sich diese theoretischen Vorteilen in der Praxis bewähren, wird im folgenden Kapitel mit einem Portfolio aus 30 Aktien empirisch untersucht. Dabei wird insbesondere die Konditionszahl als Maß für die numerische Stabilität im Vergleich zur klassischen Optimierung herangezogen.
 	
 	\clearpage
 	
 	\section{Empirischer Vergleich}
 	
-	Nachdem wir die theoretischen Grundlagen sowohl für das Markowitz-Modell als auch für das Hierarchical-Risk-Paritiy Modell geklärt haben, folgt im vorliegenden Kapitel der empirische Vergleich der beiden Modelle. Hierfür wenden wir beide Modelle auf ein Portfolio bestehend aus 30 Assets an. Als Benchmark dient in diesem Vergleich die naive Diversifikation. Also ein Portfolio in dem alle Assets gleich, also mit $\frac{1}{N}$, gewichtet werden. Der Zeitraum den wir betrachten wollen erstreckt sich über 20 Jahre (2006 - 2026).
+	Nachdem die theoretischen Grundlagen sowohl für das Markowitz-Modell als auch für das Hierarchical-Risk-Paritiy Modell geklärt wurden, folgt im vorliegenden Kapitel der empirische Vergleich der beiden Modelle. Hierfür werden beide Modelle auf ein Portfolio bestehend aus 30 Assets angewendet. Als Benchmark dient in diesem Vergleich die naive Diversifikation. Also ein Portfolio in dem alle Assets gleich, also mit $\frac{1}{N}$, gewichtet werden. Der Zeitraum den wir betrachten wollen erstreckt sich über 20 Jahre (2006 - 2026).
 	
 	\subsection{Zusammenstellung des Portfolios}
 	
@@ -633,9 +639,9 @@
 	Für die Durchführung der Simulation wurden folgende Kernparameter festgelegt:
 	
 	\begin{itemize}
-		\item \textbf{Schätzzeitraum (Lookback):} Zur Berechnung der Eingabeparameter wird ein rollierendes Fenster von 12 Monaten verwendet. Dieser Zeitraum stellt sicher dass wir genügend Datengrundlage für das Rebalancing haben, jedoch auch auf aktuelle Trends im Markt reagieren können. Als Datengrundlage dienen die Schlusskurse der einzelnen Handelstage.
-		\item \textbf{Rebalancing-Frequenz:} Die Portfolios werden jährlich, halbjährlich sowie quartalsweise neu gewichtet. Die Rebalancing Frequenzen orientieren sich an realistischen Zeiträumen aus der Finanzwelt. Wir betrachten hier drei verschiedenen Frequenzen, um zu prüfen ob sich die Modelle abhängig vom Rebalancing unterschiedlich verhalten, oder ob die Frequenz keine merklichen Auswirkungen auf die jeweilige Performance hat.
-		\item \textbf{Benchmark:} Als Referenz dient die naive Diversifikation (1/N). Das Benchmarkportfolio dient als Vergleichswert. Ziel dabei ist die Überprüfung wie groß der Optimierungseffekt auf unser Portfolio mit den verschiedenen Ansätzen überhaupt ist. 
+		\item \textbf{Schätzzeitraum (Lookback):} Zur Berechnung der Eingabeparameter wird ein rollierendes Fenster von 12 Monaten verwendet. Dieser Zeitraum stellt sicher dass man genügend Datengrundlage für das Rebalancing hat, jedoch auch auf aktuelle Trends im Markt reagieren kann. Als Datengrundlage dienen die Schlusskurse der einzelnen Handelstage.
+		\item \textbf{Rebalancing-Frequenz:} Die Portfolios werden jährlich, halbjährlich sowie quartalsweise neu gewichtet. Die Rebalancing Frequenzen orientieren sich an realistischen Zeiträumen aus der Finanzwelt. Es werden drei verschiedenen Frequenzen betrachtet, um zu prüfen ob sich die Modelle abhängig vom Rebalancing unterschiedlich verhalten, oder ob die Frequenz keine merklichen Auswirkungen auf die jeweilige Performance hat.
+		\item \textbf{Benchmark:} Als Referenz dient die naive Diversifikation (1/N). Das Benchmarkportfolio dient als Vergleichswert. Ziel dabei ist die Überprüfung wie groß der Optimierungseffekt auf die Portfolios mit den verschiedenen Ansätzen überhaupt ist. 
 	\end{itemize}
 	
 	\clearpage
@@ -648,14 +654,10 @@
 	
 	
 	
-	Wie bereits in Kapitel 3.7 dargelegt, stellt die numerische Instabilität bei der Inversion der Kovarianzmatrix eine zentrale Schwachstelle des Markowitz-Modells dar. Im Rahmen dieser empirischen Untersuchung wird daher die Konditionszahl (\ref{eq:kondition}) der Kovarianzmatrizen explizit überwacht. Dies erlaubt es, die theoretisch postulierten Vorteile des HRP-Algorithmus – insbesondere den Verzicht auf die Matrixinversion – anhand der vorliegenden Marktdaten zu validieren.
-	% evtl. den letzten Satz weglassen
+	Wie bereits in Kapitel 3.7 dargelegt, stellt die numerische Instabilität bei der Inversion der Kovarianzmatrix eine zentrale Schwachstelle des Markowitz-Modells dar. Im Rahmen dieser empirischen Untersuchung wird daher die Konditionszahl \eqref{eq:kondition} der Kovarianzmatrizen explizit überwacht. Dies erlaubt es, die theoretisch postulierten Vorteile des HRP-Algorithmus – insbesondere den Verzicht auf die Matrixinversion – anhand der vorliegenden Marktdaten zu validieren.
 	
-	Für die praktische Umsetzung des klassischen Markowitz-Modells wurde im Optimierungsschritt das sogenannte Shrinkage-Verfahren eingesetzt. Hierbei werden kleine Werte auf der Diagonalen der Kovarianzmatrix addiert, da die Matrix sonst zu nah an der Singularität wäre. Das würde wiederum im Code zu einer Fehlermeldung führen. Die Kovarianzmatrizen haben also die Form
-	
-	% Für die praktische Umsetzung des klassischen Markowitz-Modells wird im Optimierungsschritt ein Regularisierungsverfahren (Tikhonov-Anpassung) eingesetzt. Da die numerische Lösung des quadratischen Optimierungsproblems eine positiv definite Matrix voraussetzt, muss sichergestellt werden, dass alle Eigenwerte der Matrix echt größer als Null sind. In Phasen hoher Korrelation oder bei numerischer Singularität würde der Solver (CVXOPT) keine konvergente Lösung finden. Um die Berechenbarkeit in jedem Rebalancing-Schritt zu garantieren, wird die Hauptdiagonale der Kovarianzmatrix minimal angepasst:
-	
-	% Sharpe Ratio
+	Für die praktische Umsetzung des klassischen Markowitz-Modells wurde im Optimierungsschritt das sogenannte Shrinkage-Verfahren eingesetzt. Hierbei werden kleine Werte auf der Diagonalen der Kovarianzmatrix addiert, da die Matrix sonst zu nah an der Singularität wäre. Das würde dazu führen dass das Optimierungsverfahren bei gewissen Rebalancing-Schritten nicht konvergiert. Durch diese Regularisierung wird die numerische Stabilität des Algorithmus verbessert, um eine robuste Schätzung der Portfoliogewichte sicherzustellen.
+	Die regularisierten Kovarianzmatrizen berechnen sich also als
 	
 	\begin{equation}
 		\Sigma_{i, \epsilon} = \Sigma_i + I \cdot \epsilon . \label{eq:shrinkage}
@@ -671,7 +673,7 @@
 	
 	Das Sharpe-Ratio misst das Verhältnis von Rendite zur Volatilität. Ein hohes Sharpe-Ratio deutet also auf eine effizientere Risikoallokation hin, während ein niedriges Sharpe-Ratio das Gegenteil andeutet. Es dient als zentrales Maß für die Diversifikation eines Portfolios.
 	
-	Da im betrachteten Zeitraum über einen Großteil der Zeit eine sehr starke Niedrigzinspolitik herrschte, wird in dieser Untersuchung der risikolose Zins $r_f$ mit null angenommen. Außerdem liegt der Fokus auf dem Vergleich der Modelle. Da der risikolose Zins bei allen Portfolios gleichermaßen abgezogen werden würde, beeinträchtit diese Vereinfachung den Vergleich nicht.
+	Da im betrachteten Zeitraum über einen Großteil der Zeit eine sehr starke Niedrigzinspolitik herrschte, wird in dieser Untersuchung der risikolose Zins $r_f$ mit null angenommen. Außerdem liegt der Fokus auf dem Vergleich der Modelle. Da der risikolose Zins bei allen Portfolios gleichermaßen abgezogen werden würde, beeinträchtigt diese Vereinfachung den Vergleich nicht.
 	
 	\clearpage
 	
@@ -679,7 +681,7 @@
 	
 	Zunächst wird die numerische Stabilität betrachtet, denn das ist einer der Hauptkritikpunkte von Marcos López de Prado am Markowitz-Modell \parencite[222]{Lopez}.
 	
-	In dieser Untersuchung wurde bei jedem Rebalancing die Konditionszahl der Kovarianzmatrix mit (\ref{eq:kondition}) bestimmt. Plottet man die Konditionszahl gegen die Zeit erhählt man folgenden Graphen.
+	Da die Kovarianzmatrizen alle symmetrisch sind (siehe \eqref{eq:kovarianzmatrix}), wurde die Konditionszahl in dieser Analyse mit \eqref{eq:kondition} bestimmt. Plottet man nun die Konditionszahl gegen die Zeit erhält man folgenden Graphen.
 	
 	% Beim Konditions-Plot die Markierung bei 10³ entfernen
 	
@@ -692,7 +694,7 @@
 	
 	% evtl die anderen Plots zur Konditionszahl im Anhang zeigen
 	% Quelle für kritsche Konditionszaheln (200, 300)
-	Exemplarisch wird hier die rohe Konditionszahl bei halbjährlicher Rebalancing Frequenz betrachtet, d.h. es wird die Konditionszahl berechnet, bevor das Shrinkage-Verfahren angewendet wird. Man kann sehen, dass die Konditonszahl über die Zeit stark schwankt. Jedoch erreicht sie nie den kritischen Wert von $10^3$. Allerdings gilt auch eine Konditionszahl von einem Wert über 200 bereits als numerisch instabil. In diesem Bereich bewegt sich die Konditionszahl der Kovarianzmatrizen in regelmäßigen Abständen. Dieser Umstand erklärt auch, wieso die Anwendung von Shrinkage überhaupt notwendig ist, denn gewisse Matrizen sind einfach zu schlecht Konditioniert. 
+	Exemplarisch wird hier die rohe Konditionszahl bei halbjährlicher Rebalancing Frequenz betrachtet, d.h. es wird die Konditionszahl berechnet, bevor das Shrinkage-Verfahren angewendet wird. Man kann sehen, dass die Konditonszahl über die Zeit stark schwankt. Jedoch erreicht sie nie den kritischen Wert von $10^3$. Allerdings gilt auch eine Konditionszahl von einem Wert über 200 bereits als numerisch instabil. In diesem Bereich bewegt sich die Konditionszahl der Kovarianzmatrizen in regelmäßigen Abständen. Dieser Umstand erklärt auch, wieso die Anwendung von Shrinkage überhaupt notwendig ist, denn gewisse Matrizen sind einfach zu schlecht Konditioniert für eine stabile Schätzung der Gewichte.
 	
 	\begin{table}[H]
 	\centering
@@ -707,9 +709,9 @@
 	\end{tabular}
 	\end{table}
 	
-	Wenn man die Konditionszahl für verschiedene Rebalancing Frequenzen betrachtet, stellt man fest dass die durchschnittliche Konditionszahl fast konstant ist. Sie ändert sich lediglich an der zweiten Nachkommastelle. Die maximale Konditionszahl nimmt mit niedriger Rebalancing-Frequenz ab, jedoch auch nur geringfügig. Die Rebalancing-Frequenz scheint einen sehr geringen Einfluss auf die Konditionierung der Kovarianzmatrizen zu haben.
+	Wenn man die Konditionszahl für verschiedene Rebalancing Frequenzen betrachtet, stellt man fest dass die durchschnittliche Konditionszahl fast konstant ist. Sie ändert sich lediglich an der zweiten Nachkommastelle. Die maximale Konditionszahl nimmt mit niedriger Rebalancing-Frequenz ab, jedoch auch nur geringfügig. Die Rebalancing-Frequenz scheint nur einen sehr geringen Einfluss auf die Konditionierung der Kovarianzmatrizen zu haben.
 	
-	Diese Untersuchung bestätigt also die Behauptung von Marcos López de Prado, dass die Matrizen für die Markowitz-Optimierung schlecht konditioniert sein können (vgl. \textcite[222]{Lopez}), und dadurch kleine Fehler in den geschätzten Parametern zu großen Veränderungen in den berechneten Portfoliogewichten entstehen können. Es wird auch klar, warum die es sinnvoll sein kann einen Algorithmus zu verwenden, der auf Matrixinversionen verzichtet, und somit von numerischen Instabilitäten deutlich weniger betroffen ist.
+	Diese Untersuchung bestätigt also die Behauptung von Marcos López de Prado, dass die Matrizen für die Markowitz-Optimierung schlecht konditioniert sein können (vgl. \textcite[222]{Lopez}), und dadurch kleine Fehler in den geschätzten Parametern zu großen Veränderungen in den berechneten Portfoliogewichten führen können. Es wird auch klar, warum die es sinnvoll sein kann einen Algorithmus zu verwenden, der auf Matrixinversionen verzichtet, und somit von numerischen Instabilitäten deutlich weniger betroffen ist.
 	
 	
 	\textbf{Performance:}
@@ -725,11 +727,11 @@
 	\label{fig:performance}
 	\end{figure}
 	
-	Wir sehen im Performance-Plot der Modelle dass die naive Diversifikation die höchste Rendite erzielt. Auch wenn Markowitz und HRP im Zeitraum von 2012 - 2016 höhere Renditen erzielen, werden sie am Ende deutlich von dem $\frac{1}{N}$-Portfolio überholt.
+	Im Performance-Plot der Modelle stellt man fest, dass die naive Diversifikation die höchste Rendite erzielt. Auch wenn Markowitz und HRP im Zeitraum von 2012 - 2016 höhere Renditen erzielen, werden sie am Ende deutlich von dem $\frac{1}{N}$-Portfolio überholt.
 	
-	Die Graphen der verschiedenen Portfolios verlaufen ziemlich parallel. Weshalb man gut sieht, dass die Ausschläge sowohl bei HRP als auch bei Markowitz weniger stark sind als bei der naiven Diversifikation. Daraus kann man schlussfolgern dass die Allokations-Modelle die Volatilität, also das Risiko, tatsächlich reduziert haben. Der Preis für dieses reduzierte Risiko ist demnach die verringerte Rendite.
+	Die Graphen der verschiedenen Portfolios verlaufen ziemlich parallel. Weshalb man gut sieht, dass die Ausschläge sowohl bei HRP als auch bei Markowitz weniger stark sind als bei der naiven Diversifikation. Daraus kann man schlussfolgern dass die Allokations-Modelle die Volatilität, also das Risiko, tatsächlich reduziert haben. Der Preis für dieses reduzierte Risiko ist demnach die verringerte Rendite. Außerdem sieht man ca. im Jahr 2021 also zur Covid-Krise den vermutlich größten Wertverlust (Max. Drawdown) der Portfolios. Hier scheinen sowohl das HRP-Modell, als auch Markowitz einen geringeren Wertverlust zu erleiden als die naive Diversifikation.
 	
-	Um die Gewichtsverteilung der Modelle zu bewerten werden hier Area-Plots benutzt. Sie zeigen wie sich die Gewichte über die Zeit verändert haben. Die naive Diversifikation wird hierbei nicht betrachtet, denn dort sind die Gewichte über den gesamten Zeitraum gleich.
+	Um die Gewichtsverteilung der Modelle zu bewerten werden hier Area-Plots betrachtet. Sie zeigen wie sich die Gewichte über die Zeit verändert haben. Die naive Diversifikation wird hierbei nicht betrachtet, denn dort sind die Gewichte über den gesamten Zeitraum gleich.
 	
 	\begin{figure}[H]
 		\centering
@@ -767,6 +769,44 @@
 			Avg. Turnover & 0,256 & 0,427 & 0,000 & 0,321 & 0,627 & 0,000 & 0,394 & 0,876 & 0,000 \\ \bottomrule
 		\end{tabular}
 	\end{table}
+	
+	Zunächst sieht man dass die Vermutungen über die Rendite, die Volatilität, die Stabilität der Gewichte und den Max. Drawdown aus den Abbildungen \ref{fig:performance}, \ref{fig:area_mark_hj} und \ref{fig:area_hrp_hj} durch die Werte aus der Tabelle bestätigt werden. 
+	
+	Konkret sieht man das beide Modelle wie erwartet die Volatilität, also das Risiko, verringern und dabei auch die Rendite reduzieren. Das passt auch dazu dass der Max. Drawdown bei beiden Modellen deutlich geringer ist als bei der naiven Diversifikation. Wobei beide Werte von der Markowitz-Optimierung über alle Frequenzen am geringsten sind.
+	
+	Auch die Stabilität der Gewichte, also der Avg. Turnover ist wie erwartet bei HRP deutlich geringer als bei Markowitz. Für die halbjährliche und die jährliche Rebalancing Frequenz sogar nur ca. halb so groß. Wie bereits erwähnt werden in dieser Arbeit die Transaktionskosten nicht berücksichtigt. Würde man sie allerdings berücksichtigen, dann wäre der Renditeunterschied zwischen HRP und Markowitz noch deutlich größer.
+	
+	% Hier vielleicht dieses 1/N Puzzle erwähnen, um zu erklären warum das Sharpe-Ration von 1/N so gut ist.
+	
+	Der vielleicht interessanteste Wert ist das Sharpe-Ratio. Denn es quantifiziert die Effizienz eines Portfolios. Hier sieht man dass die naive Diversifikation über alle Frequenzen das höchste und somit beste Sharpe-Ratio aufweist. Dieses Phänomen konnte Victor DeMiguel bereits in seiner Arbeit von 2009 erklären \parencite[1947]{Puzzle} Auffällig ist auch, dass HRP über alle Frequenzen das bessere Sharpe-Ratio als Markowitz aufweist. Beide Modelle scheinen allerdings von einer höheren Rebalancing-Frequenz zu profitieren, denn je höher die Frequenz ist, desto effizienter werden die HRP- bzw. Markowitz-Portfolios.
+	
+	% Eingangsfrage beantworten!!!
+	
+	\textbf{Zusammenfassung:} 
+	
+	Die Ergebnisse dieser Arbeit bestätigen die in der Theorie bereits geklärten Vorteile des HRP-Algorithmus. Man konnte deutlich stabilere Gewichte bei HRP beobachten. Zudem war das HRP-Portfolio effizienter als das der Markowitz-Optimierung. Zwar hat Markowitz die Volatilität deutlicher gesenkt als HRP, jedoch hat sich dabei die Rendite so sehr reduziert, dass HRP trotzdem das effizientere Porfolio liefert.
+	
+	Nun zur Eingangsfrage der Arbeit, also zur Frage ob HRP bessere Ergebnisse liefert als die klassische Markowitz-Optimierung. Zunächste kann man festhalten, dass Markowitz tatsächlich Probleme mit der numerischen Stabilität hat. Das Tracking der Konditionszahl hat gezeigt dass diese unter starken Schwankungen leidet. Dieses Problem umgeht HRP komplett. HRP liefert außerdem über alle drei betrachteten Frequenzen ein effizienteres Portfolio als Markowitz. Das kann man durchaus als verbesertes Ergebnis bezeichnen. Es gibt jedoch eine Sache die Markowitz verlässlich besser macht als HRP. Das Risiko wird bei Markowitz mehr reduziert als bei HRP. Sucht man also das Portfolio mit dem geringsten Risiko, dann ist Markowitz die bessere Wahl.
+	
+	\clearpage
+	
+	\section{Ausblick}
+	
+	Diese Untersuchung hat die Vorteile von HRP-Algorithmus gegenüber der Markowitz-Optimierung aufgezeigt. Jedoch ergeben sich aus dieser Arbeit spannende Ansätze für zukünftige Untersuchungen.
+	
+	\textbf{1. Integration eines realen Kostenmodells:}
+	
+	HRP lieferte in dieser Untersuchung ein deutlich geringeres Turnover als die Markowitz-Optimierung. Da in dieser Arbeit allerdings sowohl die Transaktionskosten als auch Steuern o.Ä. vernachlässigt wurden, sind die berechneten Werte Bruttowerte. Eine Folgeuntersuchung könnte unter Berücksichtigung dieser Kosten zu dem Ergebnis kommen, dass der Effizienzvorteil von HRP noch größer ist, denn durch das höhere Turnover, würde bei der Markowitz-Optimierung die Nettorendite stärker belastet werden.
+	
+	\textbf{2. Analyse des 1/N Puzzles:}
+	
+	Die naive Diversifikation hat interessanterweise über alle betrachteten Frequenzen das effizienteste Portfolio geliefert. In einer Folgestudie könnte man betrachtet ob es eine Portfoliogröße gibt, ab der die Optimierungsverfahren ihren theoretischen Vorteil gegenüber der naiven Diversifikation besser ausspielen können. 
+	
+	\textbf{3. Variieren weiterer Modell-Parameter:}
+	
+	In dieser Arbeit wurden drei Frequenzen betrachtet. Allerdings gibt es noch weitere Parameter die man variieren kann. Bspw. wurde hier als Datengrundlage für die Schätzung der Marktparameter eine Zeitraum von einem Jahr gewählt (250 Handelstage). Diesen Zeitraum könnte man in einer späteren Untersuchung variieren, um zu prüfen ob die Modelle von einer größeren Datengrundlage profitieren.
+	
+	Abschließend lässt sich festhalten, dass HRP eine wichtige Brücke zwischen der modernen Portfoliotheorie und den Anforderungen an numerische Stabilität schlägt. Während die klassische Optimierung ein wertvolles theoretisches Fundament bleibt, bietet der hierarchische Ansatz eine Antwort auf die Herausforderungen verrauschter Finanzmarktdaten.
 	
 \clearpage
 \printbibliography[title={Literaturverzeichnis}]
