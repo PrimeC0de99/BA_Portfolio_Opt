@@ -76,8 +76,35 @@
 \clearpage
 
 \section*{Symbolverzeichnis}
-
-
+% ist es schlimm wenn die erwarteten Renditen zum Teil kein ^ über sich haben? Bspw. bei 3.3?
+% Die Koeffizienten für die Optimierung, müssen die auch da rein?
+\begin{tabular}{lp{12cm}}
+	$R_t$ & Rendite eines Assets zum Zeitpunkt $t$ \\
+	$S_t$ & Kurswert eines Assets zum Zeitpunkt $t$ \\
+	$\hat{\mu_i}$ & Geschätzte erwartete Rendite des $i$-ten Assets \\
+	$\hat{\sigma_i}^2$ & Geschätzte Varianz des $i$-ten Assetes \\
+	$\operatorname{Cov}()$ & Kovarianz zweier Assets \\
+	$\rho_{i,j}$ & Korrelation zweier Assets \\
+	$\Sigma$ & Korrelationsmatrix der Asset-Renditen \\
+	% Korrelationsmatrix hat auch R
+	$\kappa$ & Konditionszahl \\
+	$\lambda$ & Eigenwert \\
+	$\mu_p$ & Erwartete Rendite eines Portfolios $p$ \\
+	${\sigma_p}^2$ & Erwartete Varianz eines Portfolios $p$ \\
+	$w_i$ & Portfoliogewicht des $i$-ten Assets \\
+	$\mathbf{1}$ & Ein Vektor bestehend nur aus Einsen \\
+	$h_i$ & $i$-te nach null umgestellte Gleichheitsnebenbedingung \\
+	$g_j$ & $j$-te nach null umgestellte  Ungleichheitsnebenbedingung \\
+	$d_{i,j}$ & Distanzmetrik zwischen den Assets $i$ und $j$ \\
+	$C_i$ & $i$-tes Cluster im Dendrogramm von HRP \\
+	% g wird auch für die Gewichte bei HRP genutzt (4.3)
+	$r_t$ & Logarithmische Rendite \\
+	$\Sigma_{i, \epsilon}$ & Kovarianzmartix nach Anwendung von Shrinkage \\
+	$I$ & Einheitsmatrix \\
+	$\epsilon$ & Der bei Shrinkage addierte Wert \\
+	$SR$ & Sharpe Ratio \\
+	$r_f$ & Risikoloser Zinssatz \\
+\end{tabular}
 
 \clearpage
 
@@ -809,7 +836,10 @@
 	Abschließend lässt sich festhalten, dass HRP eine wichtige Brücke zwischen der modernen Portfoliotheorie und den Anforderungen an numerische Stabilität schlägt. Während die klassische Optimierung ein wertvolles theoretisches Fundament bleibt, bietet der hierarchische Ansatz eine Antwort auf die Herausforderungen verrauschter Finanzmarktdaten.
 	
 \clearpage
-\printbibliography[title={Literaturverzeichnis}]
 
+\printbibliography[title={Literaturverzeichnis}]
+\clearpage
+
+\section{Anhang}
 	
 \end{document}
