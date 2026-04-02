@@ -1,34 +1,39 @@
 import pandas as pd
 import numpy as np
-# from dateutil.relativedelta import relativedelta
-
 
 # ------------------------------------------------------------
-#  1. Rohdaten laden (UNVERÄNDERT)
+#  1. Rohdaten laden
 # ------------------------------------------------------------
-Daten = pd.read_csv("~/Dokumente/BA/Daten/Kursdaten.csv")
+# Wir laden die neue Datei und stellen sicher, dass 'Date' das Datum ist
+Daten = pd.read_csv("~/Dokumente/BA/Daten/Kursdaten_International.csv")
 Daten["Date"] = pd.to_datetime(Daten["Date"])
 
 # ------------------------------------------------------------
-#  2. Auswahl der 20 Aktien ab 1998-11-09 (UNVERÄNDERT)
+#  2. Auswahl der Aktien
 # ------------------------------------------------------------
 aktien_df = [c for c in Daten.columns if c != "Date"]
-startdatum = pd.Timestamp("1998-11-09")
-aktien20_98 = [col for col in aktien_df if not pd.isna(Daten.loc[Daten["Date"] == startdatum, col]).values[0]]
-daten_20 = Daten.loc[Daten["Date"] >= startdatum, ["Date"] + aktien20_98]
+
+# Wir setzen das Startdatum auf den ersten verfügbaren Tag im neuen Datensatz
+startdatum = Daten["Date"].min() 
+print(f"Analysestart mit Daten ab: {startdatum}")
+
+# Da wir im Download-Skript schon dropna() gemacht haben, 
+# sind zum Startdatum alle verbliebenen Aktien verfügbar.
+aktien_liste = aktien_df 
+daten_20 = Daten.loc[Daten["Date"] >= startdatum].copy()
 
 # ------------------------------------------------------------
-#  3. Daten ab dem 01.07.1999 (für 6 Monate Lookback)
+#  3. Daten für Portfolio-Optimierung (Lookback-Anpassung)
 # ------------------------------------------------------------
-start_lookback = pd.Timestamp("1999-07-01") # Startet 6 Monate vor 2000-01-01
+start_lookback = pd.Timestamp("2005-01-01") 
 daten_20_erweitert = daten_20[daten_20["Date"] >= start_lookback].copy()
 
 # ------------------------------------------------------------
 #  4. Tägliche log-Returns berechnen
 # ------------------------------------------------------------
-rendite_tag = daten_20_erweitert.copy() # <-- Basis ist jetzt der erweiterte Datensatz
-rendite_tag[aktien20_98] = np.log(rendite_tag[aktien20_98] / rendite_tag[aktien20_98].shift(1))
+rendite_tag = daten_20_erweitert.copy()
+rendite_tag[aktien_liste] = np.log(rendite_tag[aktien_liste] / rendite_tag[aktien_liste].shift(1))
 rendite_tag = rendite_tag.dropna()
 
-
-# Daten_20_erweitert sind die Daten der 20 Aktien ab dem Jahr 2000 (und das halbe Jahr davor für das erste Portfolio)
+# für Folgedateien
+aktien20_98 = aktien_liste
