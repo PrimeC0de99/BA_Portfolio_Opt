@@ -12,7 +12,7 @@ aktien = da.aktien20_98
 
 # Zeitraum definieren: START am 01.01.2006, ENDE am 31.12.2025
 # Ändere freq="YS" zu "QS" für Quartale oder "6MS" für Halbjahre
-jahre = pd.date_range(start="2006-01-01", end="2025-12-31", freq="QS")          # Frequenz 
+jahre = pd.date_range(start="2006-01-01", end="2025-12-31", freq="6ME")          # Frequenz 
 
 portfolio_features = {} 
 rueck = 12  # Lookback-Window in Monaten (z.B. 12 für ein Jahr Historie)
@@ -52,7 +52,7 @@ for folgejahr in jahre:
 df_stability = pd.DataFrame(stability_results).set_index('Date') 
 
 # ------------------------------------------------------------ 
-# 3. Markowitz Optimierung (MinVar) 
+# 3. Markowitz Optimierung
 # ------------------------------------------------------------ 
 minvar_portfolios = {} 
 solvers.options['show_progress'] = False # Unterdrückt CVXOPT-Output
@@ -62,7 +62,7 @@ for jahr in portfolio_features.keys():
     cov_mat = portfolio_features[jahr]['cov'].values 
     n = len(mu) 
 
-    # Regularisierung (Tikhonov / Ridge), um numerische Stabilität zu garantieren
+    # Shrinkage
     epsilon = 1e-6 
     cov_mat_reg = cov_mat + np.eye(n) * epsilon 
     # Falls Matrix noch nicht positiv definit, Epsilon erhöhen
@@ -73,7 +73,7 @@ for jahr in portfolio_features.keys():
     # QP Setup: Zielfunktion min w.T * P * w 
     P = matrix(cov_mat_reg) 
     q = matrix(np.zeros(n)) 
-    G = matrix(-np.eye(n))      # Nebenbedingung: w >= 0 (Short-Selling-Verbot)
+    G = matrix(-np.eye(n))      # Nebenbedingung: w >= 0 (keine Leerverkäufe)
     h = matrix(np.zeros(n)) 
     A = matrix(np.ones((1, n))) # Nebenbedingung: Summe der Gewichte = 1 
     b = matrix(np.ones(1)) 

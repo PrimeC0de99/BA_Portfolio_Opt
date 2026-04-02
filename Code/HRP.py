@@ -43,7 +43,7 @@ def getQuasiDiag(Z, aktien_namen):
         sortIx[i] = Z[j, 0]  
         df0 = pd.Series(Z[j, 1], index=i + 1) 
          
-        # NEU: pd.concat statt deprecated append
+        
         sortIx = pd.concat([sortIx, df0]).sort_index()  
         sortIx.index = range(sortIx.shape[0]) 
          
@@ -90,9 +90,8 @@ def getRecBipart(cov, sortIx):
 #                       HRP LOOP (OPTIMIERUNG)
 # ----------------------------------------------------------------------------- 
 
-# FESTES ENDDATUM: 31.12.2025 (identisch zu Markowitz)
-# Ändere freq="YS" zu "QS" für Quartale, falls gewünscht
-jahre = pd.date_range(start="2006-01-01", end="2025-12-31", freq="QS")          # Frequenz YS, QS, 6ME
+# Enddatum: 31.12.2025 (identisch zu Markowitz)
+jahre = pd.date_range(start="2006-01-01", end="2025-12-31", freq="6ME")          # Frequenz YS, QS, 6ME
 
 hrp_port = {} 
 portfolio_features = {} 
@@ -115,7 +114,7 @@ for folgejahr in jahre:
     # 1. Korrelations- und Abstandsmatrix
     corr, dist = hrp(prev_window_returns) 
     
-    # 2. Kovarianzmatrix aus dem Markowitz-Modul ziehen (Konsistenz!)
+    # 2. Kovarianzmatrix aus dem Markowitz-Modul ziehen
     cov = portfolio_input[year_key]['cov'] 
               
     # 3. Clustering (Linkage) 
@@ -124,7 +123,7 @@ for folgejahr in jahre:
     Z = linkage(dist_vector, method='ward') 
  
     # 4. Quasidiagonalisierung & Gewichte
-    # Wir übergeben die Spaltennamen von 'dist', damit die Indizes passen
+    # Übergabe der Spaltennamen von 'dist', damit die Indizes passen
     order = getQuasiDiag(Z, dist.columns.tolist()) 
     w = getRecBipart(cov, order) 
      
