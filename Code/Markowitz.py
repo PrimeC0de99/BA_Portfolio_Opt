@@ -1,105 +1,95 @@
-import pandas as pd
-from cvxopt import matrix, solvers
-import numpy as np
-import Daten as da
-from dateutil.relativedelta import relativedelta
+import pandas as pd 
+from cvxopt import matrix, solvers 
+import numpy as np 
+import Daten as da 
+from dateutil.relativedelta import relativedelta 
 
+# ------------------------------------------------------------ 
+# 1. Daten Setup 
+# ------------------------------------------------------------ 
+rendite_tag = da.rendite_tag 
+aktien = da.aktien20_98 
 
-# aktien : Die Liste der Aktien, die im Portfolio sind (Liste von Strings)
-# rendite_tag: Log-Rendite
-rendite_tag = da.rendite_tag
-aktien = da.aktien20_98
+# Zeitraum definieren: START am 01.01.2006, ENDE am 31.12.2025
+# Ändere freq="YS" zu "QS" für Quartale oder "6MS" für Halbjahre
+jahre = pd.date_range(start="2006-01-01", end="2025-12-31", freq="6ME")          # Frequenz 
 
-# ------------------------------------------------------------
-#  5. Für jeden Monat Erwartungswert & Kovarianzmatrix (letzte 6 Monate)
-# ------------------------------------------------------------
-# Erster Folgemonat (Optimierungsziel) ist jetzt 2000-01-01
-monate = pd.date_range(start="2004-01-01", end="2024-12-01", freq="MS") # <-- ZURÜCK AUF 2000-01-01
-portfolio_features = {}
-rueck = 6  # Zeitraum für Schätzung (UNVERÄNDERT)
+portfolio_features = {} 
+rueck = 12  # Lookback-Window in Monaten (z.B. 12 für ein Jahr Historie)
 
-for folgemonat in monate:
-    start_rueck = folgemonat - relativedelta(months=rueck)
-    
-    # Filter: Tagesrenditen der letzten 6 Monate vor dem Folgemonat
-    hist_daten = rendite_tag[
-        (rendite_tag["Date"] >= start_rueck) &
-        (rendite_tag["Date"] < folgemonat)
-    ][aktien]
+# ------------------------------------------------------------ 
+# 2. Feature Schätzung & Konditionszahlen 
+# ------------------------------------------------------------ 
+stability_results = [] 
 
-    if hist_daten.empty:
-        continue
-    
-    # ... (Rest der Schätzung bleibt unverändert) ...
+for folgejahr in jahre: 
+    start_rueck = folgejahr - relativedelta(months=rueck) 
+     
+    # Filter: Tagesrenditen im Lookback-Zeitraum
+    hist_daten = rendite_tag[ 
+        (rendite_tag["Date"] >= start_rueck) &  
+        (rendite_tag["Date"] < folgejahr) 
+    ][aktien] 
 
-    # --- Schätzung unter Normalverteilungsannahme ---
-    mu_log = hist_daten.mean()
-    sigma2_log = hist_daten.var()
+    if hist_daten.empty: 
+        continue 
+     
+    mu_log = hist_daten.mean() 
+    cov_mat = hist_daten.cov() 
 
-    # Erwarteter arithmetischer Return unter lognormaler Annahme
-    #mu_arith = np.exp(mu_log + 0.5 * sigma2_log) - 1
+    # Speicherung der Features 
+    month_str = str(folgejahr.date()) 
+    portfolio_features[month_str] = { 
+        "mu": mu_log, 
+        "cov": cov_mat 
+    } 
+     
+    # Konditionszahl der rohen Kovarianzmatrix berechnen & speichern 
+    cond_no = np.linalg.cond(cov_mat.values) 
+    stability_results.append({'Date': folgejahr, 'Condition_Number': cond_no}) 
 
-    # Kovarianzmatrix der Log-returns
-    cov_mat = hist_daten.cov()
+# Stabilitäts-Daten in DataFrame umwandeln 
+df_stability = pd.DataFrame(stability_results).set_index('Date') 
 
-    # Speicherung
-    portfolio_features[str(folgemonat.date())] = {
-        "mu": mu_log,
-        "cov": cov_mat
-    }
+# ------------------------------------------------------------ 
+# 3. Markowitz Optimierung
+# ------------------------------------------------------------ 
+minvar_portfolios = {} 
+solvers.options['show_progress'] = False # Unterdrückt CVXOPT-Output
 
-# Beispiel-Ausgabe
-first_key = list(portfolio_features.keys())[0]
-print(f"Beispielmonat: {first_key}")
-print("Erwartete Renditen:\n", portfolio_features[first_key]["mu"].head())
-print("\nKovarianzmatrix (Ausschnitt):\n", portfolio_features[first_key]["cov"].iloc[:5, :5])
+for jahr in portfolio_features.keys(): 
+    mu = portfolio_features[jahr]['mu'].values 
+    cov_mat = portfolio_features[jahr]['cov'].values 
+    n = len(mu) 
 
+    # Shrinkage
+    epsilon = 1e-6 
+    cov_mat_reg = cov_mat + np.eye(n) * epsilon 
+    # Falls Matrix noch nicht positiv definit, Epsilon erhöhen
+    while np.any(np.linalg.eigvals(cov_mat_reg) <= 0): 
+        epsilon *= 10 
+        cov_mat_reg = cov_mat + np.eye(n) * epsilon 
 
+    # QP Setup: Zielfunktion min w.T * P * w 
+    P = matrix(cov_mat_reg) 
+    q = matrix(np.zeros(n)) 
+    G = matrix(-np.eye(n))      # Nebenbedingung: w >= 0 (keine Leerverkäufe)
+    h = matrix(np.zeros(n)) 
+    A = matrix(np.ones((1, n))) # Nebenbedingung: Summe der Gewichte = 1 
+    b = matrix(np.ones(1)) 
+     
+    try:
+        sol = solvers.qp(P, q, G, h, A, b) 
+        gewicht = np.array(sol['x']).flatten() 
+        gewicht[gewicht < 1e-12] = 0 # Numerisches Rauschen auf 0 setzen
+         
+        minvar_portfolios[jahr] = pd.Series(gewicht, index=portfolio_features[jahr]['mu'].index) 
+    except:
+        print(f"Warnung: Optimierung für {jahr} fehlgeschlagen.")
 
-# -----------------------------------------------------------------------------
-#                               Optimierung
-# -----------------------------------------------------------------------------
-
-# Dictionary für Portfolios
-minvar_portfolios = {}
-
-# Alle Monate aus portfolio_features (Startet jetzt mit 2000-01-01)
-monate = list(portfolio_features.keys())
-
-#  Schleife über ALLE Monate (ab 2000-01-01) - direkte Optimierung
-for monat in monate: # <-- ÄNDERUNG HIER: Schleife startet beim ersten verfügbaren Monat
-    mu = portfolio_features[monat]['mu'].values       # Erwartete Renditen
-    cov_mat = portfolio_features[monat]['cov'].values # Kovarianzmatrix
-    n = len(mu)
-
-    # --- Regularisierung falls Kovarianzmatrix nicht positiv definit ---
-    epsilon = 1e-6
-    cov_mat_reg = cov_mat + np.eye(n) * epsilon
-    while np.any(np.linalg.eigvals(cov_mat_reg) <= 0):
-        epsilon *= 10
-        cov_mat_reg = cov_mat + np.eye(n) * epsilon
-
-    # --- Quadratische Programmierung: min w.T * cov * w, s.t. sum(w)=1, w>=0 ---
-    P = matrix(cov_mat_reg)
-    q = matrix(np.zeros(n))
-    
-    # Gleichungen: Summe der Gewichte = 1
-    G = matrix(-np.eye(n))  # w >= 0 -> -w <= 0
-    h = matrix(np.zeros(n))
-    
-    A = matrix(np.ones((1, n)))
-    b = matrix(np.ones(1))
-    
-    # Optimierung
-    sol = solvers.qp(P, q, G, h, A, b)
-    gewicht = np.array(sol['x']).flatten()
-    
-    # Kleine Rundungsfehler eliminieren
-    gewicht[gewicht < 1e-12] = 0
-    
-    # Speichern als Pandas Series
-    minvar_portfolios[monat] = pd.Series(gewicht, index=portfolio_features[monat]['mu'].index)
-
-# Beispielausgabe
-example_month = monate[0] # <-- Beispiel zeigt jetzt den ersten optimierten Monat (2000-01-01)
-print(f"\nMinVar Portfolio für {example_month}: \n", minvar_portfolios[example_month])
+# ------------------------------------------------------------ 
+# 4. Zusammenfassung & Stabilitäts-Metriken
+# ------------------------------------------------------------ 
+print("\n--- Analyse der Kovarianzmatrizen abgeschlossen ---") 
+print(f"Max. Konditionszahl: {df_stability['Condition_Number'].max():.2f}") 
+print(f"Ø Konditionszahl:    {df_stability['Condition_Number'].mean():.2f}")
