@@ -11,7 +11,7 @@ minvar_portfolios = mark.minvar_portfolios
 rendite_tag = da.rendite_tag
 
 # -----------------------------------------------------------------------------
-# DATEN-SCHNITT & VORBEREITUNG
+# Vorbereitung
 # -----------------------------------------------------------------------------
 end_date = pd.Timestamp("2025-12-31")
 rendite_tag = rendite_tag[rendite_tag['Date'] <= end_date].copy()
@@ -91,9 +91,9 @@ def calculate_turnover(weights_dict):
     diff = df_weights.diff().abs().sum(axis=1)
     return diff.mean()
 
-# =============================================================================
-# AUSFÜHRUNG & PLOTS
-# =============================================================================
+# -----------------------------------------------------------------------------
+# Plots
+# -----------------------------------------------------------------------------
 
 try:
     cum_returns, metrics, p_rets = evaluate_portfolios(hrp_port, minvar_portfolios, rendite_tag)
@@ -117,7 +117,7 @@ try:
     print("\n--- Final Metrics ---")
     print(metrics.round(4))
 
-    # 3. Gewichts-Plots (Area Charts)
+    # 3. Gewichts-Plots
     def plot_weights(weights_dict, title):
         df_w = pd.DataFrame(weights_dict).T
         df_w.index = pd.to_datetime(df_w.index)
@@ -129,10 +129,10 @@ try:
         plt.show()
 
     plot_weights(hrp_port, "HRP Gewichtsverteilung")
-    plot_weights(minvar_portfolios, "Markowitz Gewichtsverteilung")             # Überschreibt aktuell den HRP Plot
+    # plot_weights(minvar_portfolios, "Markowitz Gewichtsverteilung")           # Überschreibt aktuell den HRP Plot
                                                                                 # mit dem Markowitz Plot
     # 4. Stabilitäts-Plot (Konditionszahl der Kovarianzmatrix)
-    # Wir nehmen die Daten direkt aus dem mark-Modul (df_stability)
+    # (df_stability)
     if hasattr(mark, 'df_stability'):
         plt.figure(figsize=(12, 5))
         # Semilogarithmische Darstellung, da Konditionszahlen oft Größenordnungen springen
@@ -140,7 +140,7 @@ try:
                      color='#d62728', marker='o', markersize=4, label='Konditionszahl $\kappa(\Sigma)$')
         
         # Optische Hilfslinie für "kritische" Instabilität (Faustregel 10^3 bis 10^4)
-        plt.axhline(y=1000, color='black', linestyle='--', alpha=0.3, label='Schwelle zur Instabilität ($10^3$)')
+        # plt.axhline(y=1000, color='black', linestyle='--', alpha=0.3, label='Schwelle zur Instabilität ($10^3$)')
         
         plt.title("Numerische Stabilität der Schätzung (Konditionszahl)", fontsize=14)
         plt.ylabel("Konditionszahl (Log-Skala)", fontsize=12)
