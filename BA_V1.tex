@@ -9,6 +9,34 @@
 \usepackage{tabularx}
 \usepackage{booktabs} % Für schönere Linien (optional, aber empfohlen)
 
+% Damit ich Python Copy-Pasten kann
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Einstellungen für das Erscheinungsbild
+\lstset{
+	language=Python,
+	basicstyle=\ttfamily\small, % Schreibmaschinenschrift, etwas kleiner
+	keywordstyle=\color{blue}\bfseries,
+	commentstyle=\color{green!50!black},
+	stringstyle=\color{orange},
+	numbers=left,               % Zeilennummern links
+	numberstyle=\tiny\color{gray},
+	stepnumber=1,
+	numbersep=8pt,
+	showstringspaces=false,
+	breaklines=true,            % Automatischer Zeilenumbruch (WICHTIG!)
+	frame=single,               % Rahmen um den Code
+	backgroundcolor=\color{gray!5},
+	captionpos=b                % Beschriftung unter dem Code
+	extendedchars=true,
+	literate={ä}{{\"a}}1 {ö}{{\"o}}1 {ü}{{\"u}}1 {Ä}{{\"A}}1 {Ö}{{\"O}}1 {Ü}{{\"U}}1 {ß}{{\ss}}1
+}
+
+
+% Python-Dings Ende
+
+
 % Zitierstil und Literaturverzeichnis
 \usepackage[style=apa, backend=biber]{biblatex}
 \DeclareLanguageMapping{ngerman}{ngerman-apa}
@@ -20,7 +48,7 @@
 \author{Niclas Treib}
 
 \begin{document}
-\thispagestyle{empty}
+	\thispagestyle{empty}
 	\begin{center}
 		\includegraphics[width=0.5\textwidth]{HS_Koblenz_Logo.jpg}
 		\vspace{2cm} % Erzeugt 1 cm vertikalen Abstand zwischen Logo und Titel
@@ -35,8 +63,8 @@
 		\vspace{1cm}
 		
 		\large{im Studiengang Wirtschaftsmathematik \\
-		Hochschule Koblenz, RheinAhrCampus,			\\
-		Remagen}
+			Hochschule Koblenz, RheinAhrCampus,			\\
+			Remagen}
 		
 		\vspace{1cm}
 		
@@ -47,71 +75,71 @@
 		\vspace{1.5cm}
 		
 	\end{center}
-
-\begin{center}
-\begin{tabular}{lll}
-	\textbf{Erstprüfer:} & & Prof. Dr. Anselm Hudde \\
-	\textbf{Zweitprüfer:} & & Prof. Dr. Martina Brück \\
-	\\ % & springt in die nächste Spalte der Tabelle
-	\textbf{Durchgeführt bei:} & & Hochschule Koblenz
-\end{tabular}
-\end{center}
-
-\vspace{2cm}
-
-\begin{center}
-	\large {30. Juni 2026}
-\end{center}
-\clearpage
-\setcounter{page}{1}
-\pagenumbering{Roman}
-
-\tableofcontents
-\clearpage
-
-\listoffigures
-\clearpage
-
-\listoftables
-\clearpage
-
-\section*{Symbolverzeichnis}
-% ist es schlimm wenn die erwarteten Renditen zum Teil kein ^ über sich haben? Bspw. bei 3.3?
-% Die Koeffizienten für die Optimierung, müssen die auch da rein?
-\begin{tabular}{lp{12cm}}
-	$R_t$ & Rendite eines Assets zum Zeitpunkt $t$ \\
-	$S_t$ & Kurswert eines Assets zum Zeitpunkt $t$ \\
-	$\hat{\mu_i}$ & Geschätzte erwartete Rendite des $i$-ten Assets \\
-	$\hat{\sigma_i}^2$ & Geschätzte Varianz des $i$-ten Assetes \\
-	$\operatorname{Cov}()$ & Kovarianz zweier Assets \\
-	$\rho_{i,j}$ & Korrelation zweier Assets \\
-	$\Sigma$ & Korrelationsmatrix der Asset-Renditen \\
-	% Korrelationsmatrix hat auch R
-	$\kappa$ & Konditionszahl \\
-	$\lambda$ & Eigenwert \\
-	$\mu_p$ & Erwartete Rendite eines Portfolios $p$ \\
-	${\sigma_p}^2$ & Erwartete Varianz eines Portfolios $p$ \\
-	$w_i$ & Portfoliogewicht des $i$-ten Assets \\
-	$\mathbf{1}$ & Ein Vektor bestehend nur aus Einsen \\
-	$h_i$ & $i$-te nach null umgestellte Gleichheitsnebenbedingung \\
-	$g_j$ & $j$-te nach null umgestellte  Ungleichheitsnebenbedingung \\
-	$d_{i,j}$ & Distanzmetrik zwischen den Assets $i$ und $j$ \\
-	$C_i$ & $i$-tes Cluster im Dendrogramm von HRP \\
-	% g wird auch für die Gewichte bei HRP genutzt (4.3)
-	$r_t$ & Logarithmische Rendite \\
-	$\Sigma_{i, \epsilon}$ & Kovarianzmartix nach Anwendung von Shrinkage \\
-	$I$ & Einheitsmatrix \\
-	$\epsilon$ & Der bei Shrinkage addierte Wert \\
-	$SR$ & Sharpe Ratio \\
-	$r_f$ & Risikoloser Zinssatz \\
-\end{tabular}
-
-\clearpage
-
-% \pagenumbering{arabic} <- arabische Zahlen als Nummerierung
-\setcounter{page}{1}
-\pagenumbering{arabic}
-
+	
+	\begin{center}
+		\begin{tabular}{lll}
+			\textbf{Erstprüfer:} & & Prof. Dr. Anselm Hudde \\
+			\textbf{Zweitprüfer:} & & Prof. Dr. Martina Brück \\
+			\\ % & springt in die nächste Spalte der Tabelle
+			\textbf{Durchgeführt bei:} & & Hochschule Koblenz
+		\end{tabular}
+	\end{center}
+	
+	\vspace{2cm}
+	
+	\begin{center}
+		\large {30. Juni 2026}
+	\end{center}
+	\clearpage
+	\setcounter{page}{1}
+	\pagenumbering{Roman}
+	
+	\tableofcontents
+	\clearpage
+	
+	\listoffigures
+	\clearpage
+	
+	\listoftables
+	\clearpage
+	
+	\section*{Symbolverzeichnis}
+	% ist es schlimm wenn die erwarteten Renditen zum Teil kein ^ über sich haben? Bspw. bei 3.3?
+	% Die Koeffizienten für die Optimierung, müssen die auch da rein?
+	\begin{tabular}{lp{12cm}}
+		$R_t$ & Rendite eines Assets zum Zeitpunkt $t$ \\
+		$S_t$ & Kurswert eines Assets zum Zeitpunkt $t$ \\
+		$\hat{\mu_i}$ & Geschätzte erwartete Rendite des $i$-ten Assets \\
+		$\hat{\sigma_i}^2$ & Geschätzte Varianz des $i$-ten Assetes \\
+		$\operatorname{Cov}()$ & Kovarianz zweier Assets \\
+		$\rho_{i,j}$ & Korrelation zweier Assets \\
+		$\Sigma$ & Korrelationsmatrix der Asset-Renditen \\
+		% Korrelationsmatrix hat auch R
+		$\kappa$ & Konditionszahl \\
+		$\lambda$ & Eigenwert \\
+		$\mu_p$ & Erwartete Rendite eines Portfolios $p$ \\
+		${\sigma_p}^2$ & Erwartete Varianz eines Portfolios $p$ \\
+		$w_i$ & Portfoliogewicht des $i$-ten Assets \\
+		$\mathbf{1}$ & Ein Vektor bestehend nur aus Einsen \\
+		$h_i$ & $i$-te nach null umgestellte Gleichheitsnebenbedingung \\
+		$g_j$ & $j$-te nach null umgestellte  Ungleichheitsnebenbedingung \\
+		$d_{i,j}$ & Distanzmetrik zwischen den Assets $i$ und $j$ \\
+		$C_i$ & $i$-tes Cluster im Dendrogramm von HRP \\
+		% g wird auch für die Gewichte bei HRP genutzt (4.3)
+		$r_t$ & Logarithmische Rendite \\
+		$\Sigma_{i, \epsilon}$ & Kovarianzmartix nach Anwendung von Shrinkage \\
+		$I$ & Einheitsmatrix \\
+		$\epsilon$ & Der bei Shrinkage addierte Wert \\
+		$SR$ & Sharpe Ratio \\
+		$r_f$ & Risikoloser Zinssatz \\
+	\end{tabular}
+	
+	\clearpage
+	
+	% \pagenumbering{arabic} <- arabische Zahlen als Nummerierung
+	\setcounter{page}{1}
+	\pagenumbering{arabic}
+	
 	Hierarchical Risk Parity
 	\section{Einleitung}
 	Nach mehr als sieben Jahrzehnten ist nach wie vor Markowitz das vorherrschende Optimierungsverfahren in der Portfolioallokation. Es liefert zwar gute Ergebnisse, doch weist auch signifikante Schwächen auf. Das Verfahren reagiert empfindlich auf Schätzfehler in den Eingangsparametern und es neigt dazu wenige schwach volatile Aktien stark zu gewichten. Das sind zwei Eigenschaften, die zu nicht optimalen Ergebnissen führen können und unter gewissen Marktsituation nicht gewollt sind. \\ \\
@@ -148,7 +176,7 @@
 	Durch $T-1$ im Nenner ist der Schätzer $\hat{\sigma}_i^2$ für die Varianz erwartungstreu (Bessel-Korrektur).
 	
 	Die Standardabweichung bzw. Volatilität ergibt sich als $\hat{\sigma}_i$.
-		
+	
 	\clearpage
 	
 	\subsection{Kovarianz}
@@ -174,7 +202,7 @@
 	Die Kovarianz hängt von der Skalierung der Renditen ab und ist somit nicht leicht zu interpretieren. Weshalb man als leichter zu interpretierendes Maß die Korrelation betrachtet. Sie ist auf das Intervall $[-1,1]$ normiert und berechnet sich wie folgt:
 	
 	\begin{equation}
-	\rho_{i,j} = \frac{\operatorname{Cov}(R_i,R_j)}{\hat{\sigma}_i \cdot \hat{\sigma}_j} , \quad \text{mit } \rho_{i,j} \in [-1,1] \quad \forall \ i,j. \label{eq:korrelation}
+		\rho_{i,j} = \frac{\operatorname{Cov}(R_i,R_j)}{\hat{\sigma}_i \cdot \hat{\sigma}_j} , \quad \text{mit } \rho_{i,j} \in [-1,1] \quad \forall \ i,j. \label{eq:korrelation}
 	\end{equation}
 	Wobei $\rho_{ij} = 0$ bedeutet, dass zwei Assets unkorreliert sind. Und $\rho_{ij} = \pm 1$ den perfekt korrelierten bzw. perfekt unkorrelierten Fall beschreibt.
 	
@@ -332,8 +360,8 @@
 	
 	\clearpage
 	
-	 Für unser $\mu$-$\sigma$-Diagramm erhalten wir also folgende Fallunterscheidung:
-	  
+	Für unser $\mu$-$\sigma$-Diagramm erhalten wir also folgende Fallunterscheidung:
+	
 	\begin{equation*}
 		\sigma_p = 
 		\begin{cases} 
@@ -344,12 +372,12 @@
 	
 	Wir sehen also, dass wir zwei Geraden ausgehend vom Nullpunkt auf der $\mu$-Achse erhalten. Für $-1 < \rho < 1$ liegen die Verbindungslinien also immer zwischen den beiden betrachteten Extremfällen $\rho = 1$ und $\rho = -1$. Im $\mu$-$\sigma$-Diagramm sieht das also folgendermaßen aus:
 	
-	 \begin{figure}[H]
-	 \centering
-	 \includegraphics[width=0.5\textwidth]{Rho.pdf} 
-	 \caption{Diversifikation im $\mu$-$\sigma$-Diagramm \parencite[23]{Kremer}}
-	 \label{fig:rho}
-	 \end{figure}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.5\textwidth]{Rho.pdf} 
+		\caption{Diversifikation im $\mu$-$\sigma$-Diagramm \parencite[23]{Kremer}}
+		\label{fig:rho}
+	\end{figure}
 	
 	Wir sehen wo die verschiedenen Portfolios im $\mu$-$\sigma$-Diagramm liegen. In der Praxis treten der perfekt korrelierte und der perfekt unkorrelierte Fall allerdings nicht auf. Weshalb wir immer eine bogenförmige Verbindung zwischen zwei Aktien erhalten. Eine weitere Erkenntnis ist, dass es bei den bogenförmigen Kurven immer auch ein Portfolio gibt, wo das Risiko am geringsten ist. Nämlich den Punkt der im Diagramm am weitesten links liegt. Diesen Punkt erreicht man durch das Anpassen der Gewichte, also durch Diversifikation des Portfolios.
 	
@@ -359,24 +387,24 @@
 	Da in der Realität immer $-1 < \rho < 1$ gilt. Lässt sich die Menge aller möglichen Portfolios im $\mu$-$\sigma$-Diagramm wie folgt darstellen.
 	
 	\begin{figure}[H]
-	\centering
-	\includegraphics[width=0.5\textwidth]{Oppertunitaetsbereich.pdf} 
-	\caption{Opportunitätsbereich \parencite[29]{Kremer}}
-	\label{fig:opportunität}
+		\centering
+		\includegraphics[width=0.5\textwidth]{Oppertunitaetsbereich.pdf} 
+		\caption{Opportunitätsbereich \parencite[29]{Kremer}}
+		\label{fig:opportunität}
 	\end{figure}
 	
 	
 	Diese Menge von Portfolios bezeichnen wir als Opportunitätsbereich. Seine Form ähnelt einem "Regenschirm" \parencite[28]{Kremer}. Der Punkt $G$ bezeichnet das Portfolio mit dem global geringsten Risiko.
 	
-
+	
 	\subsection{Effizienter Rand}
 	Durch die Annahme des rationalen Investors können wir den Opportunitätsbereich verkleiner. Der rationale Investor investiert nur in die Portfolios die bei gleicher Rendite ein geringeres Risko aufweisen. Gleichzeitig fallen alle Portfolios weg, die bei gleichem Risiko eine geringere Rendite aufweisen. Die übrigen Portfolios liegen auf dem \textbf{Effizienten Rand} oder der \textbf{Effizienzlinie}.
 	
 	\begin{figure}[H]
-	\centering
-	\includegraphics[width=0.5\textwidth]{Effizienzlinie.pdf} 
-	\caption{Effizienzlinie \parencite[30]{Kremer}}
-	\label{fig:effizienter rand}
+		\centering
+		\includegraphics[width=0.5\textwidth]{Effizienzlinie.pdf} 
+		\caption{Effizienzlinie \parencite[30]{Kremer}}
+		\label{fig:effizienter rand}
 	\end{figure}
 	
 	Der effiziente Rand beschreibt also alle theoretisch optimalen Portfolios. In der Praxis stellt sich für einen Anleger die Frage nach dem spezifisch für ihn optimalen Portfolio. Diese Frage führt zu der Portfolio-Optimierung nach Markowitz.
@@ -695,7 +723,7 @@
 	Als weiteres Bewertungskriterium für die Performance der verschiedenen Modelle, wird das Sharpe-Ratio betrachtet. Es setzt die Überrendite des Portfolios $\mu_p$ ins Verhältnis zu seiner Volatilität $\sigma_p$. Unter der Annahme eines riskofreien Zinssatzes $r_f$ berechnet sich das Sharpe-Ratio wie folgt:
 	
 	\begin{equation}
-			SR = \frac{\mu_p - r_f}{\sigma_p} \label{eq:sharpe_ratio}
+		SR = \frac{\mu_p - r_f}{\sigma_p} \label{eq:sharpe_ratio}
 	\end{equation}
 	
 	Das Sharpe-Ratio misst das Verhältnis von Rendite zur Volatilität. Ein hohes Sharpe-Ratio deutet also auf eine effizientere Risikoallokation hin, während ein niedriges Sharpe-Ratio das Gegenteil andeutet. Es dient als zentrales Maß für die Diversifikation eines Portfolios.
@@ -713,10 +741,10 @@
 	% Beim Konditions-Plot die Markierung bei 10³ entfernen
 	
 	\begin{figure}[H]
-	\centering
-	\includegraphics[width=1.0\textwidth]{kondition_hj.pdf} 
-	\caption{Konditionszahl (halbjährlich) über die Zeit}
-	\label{fig:kondition}
+		\centering
+		\includegraphics[width=1.0\textwidth]{kondition_hj.pdf} 
+		\caption{Konditionszahl (halbjährlich) über die Zeit}
+		\label{fig:kondition}
 	\end{figure}
 	
 	% evtl die anderen Plots zur Konditionszahl im Anhang zeigen
@@ -724,16 +752,16 @@
 	Exemplarisch wird hier die rohe Konditionszahl bei halbjährlicher Rebalancing Frequenz betrachtet, d.h. es wird die Konditionszahl berechnet, bevor das Shrinkage-Verfahren angewendet wird. Man kann sehen, dass die Konditonszahl über die Zeit stark schwankt. Jedoch erreicht sie nie den kritischen Wert von $10^3$. Allerdings gilt auch eine Konditionszahl von einem Wert über 200 bereits als numerisch instabil. In diesem Bereich bewegt sich die Konditionszahl der Kovarianzmatrizen in regelmäßigen Abständen. Dieser Umstand erklärt auch, wieso die Anwendung von Shrinkage überhaupt notwendig ist, denn gewisse Matrizen sind einfach zu schlecht Konditioniert für eine stabile Schätzung der Gewichte.
 	
 	\begin{table}[H]
-	\centering
-	\caption{Analyse der numerischen Stabilität (Konditionszahl $\kappa$)}
-	\label{tab:stabilitaet_vergleich}
-	\begin{tabular}{@{}lccc@{}}
-		\toprule
-		\textbf{Rebalancing-Frequenz} & \textbf{Max. $\kappa$} & \textbf{Ø $\kappa$} & \textbf{Stabilitätsrisiko} \\ \midrule
-		Quartalsweise & 229,33 & 103,42 & Hoch \\
-		Halbjährlich & 225,59 & 103,49 & Hoch \\
-		Jährlich & 221,69 & 103,47 & Hoch \\ \bottomrule
-	\end{tabular}
+		\centering
+		\caption{Analyse der numerischen Stabilität (Konditionszahl $\kappa$)}
+		\label{tab:stabilitaet_vergleich}
+		\begin{tabular}{@{}lccc@{}}
+			\toprule
+			\textbf{Rebalancing-Frequenz} & \textbf{Max. $\kappa$} & \textbf{Ø $\kappa$} & \textbf{Stabilitätsrisiko} \\ \midrule
+			Quartalsweise & 229,33 & 103,42 & Hoch \\
+			Halbjährlich & 225,59 & 103,49 & Hoch \\
+			Jährlich & 221,69 & 103,47 & Hoch \\ \bottomrule
+		\end{tabular}
 	\end{table}
 	
 	Wenn man die Konditionszahl für verschiedene Rebalancing Frequenzen betrachtet, stellt man fest dass die durchschnittliche Konditionszahl fast konstant ist. Sie ändert sich lediglich an der zweiten Nachkommastelle. Die maximale Konditionszahl nimmt mit niedriger Rebalancing-Frequenz ab, jedoch auch nur geringfügig. Die Rebalancing-Frequenz scheint nur einen sehr geringen Einfluss auf die Konditionierung der Kovarianzmatrizen zu haben.
@@ -748,10 +776,10 @@
 	Als erstes betrachtet man die allgemeine Performance. Hierzu schaut man sich die Rendite der verschiedenen Anlagestrategien über die Zeit an. Exemplarisch wird hier die Rendite über die Zeit bei halbjährlicher Rebalancing-Frequenz betrachtet.
 	
 	\begin{figure}[H]
-	\centering
-	\includegraphics[width=1.0\textwidth]{performance_hj.pdf} 
-	\caption{Performance der Modelle bei halbjährlicher Rebalancing-Frequenz}
-	\label{fig:performance}
+		\centering
+		\includegraphics[width=1.0\textwidth]{performance_hj.pdf} 
+		\caption{Performance der Modelle bei halbjährlicher Rebalancing-Frequenz}
+		\label{fig:performance}
 	\end{figure}
 	
 	Im Performance-Plot der Modelle stellt man fest, dass die naive Diversifikation die höchste Rendite erzielt. Auch wenn Markowitz und HRP im Zeitraum von 2012 - 2016 höhere Renditen erzielen, werden sie am Ende deutlich von dem $\frac{1}{N}$-Portfolio überholt.
@@ -762,7 +790,7 @@
 	
 	\begin{figure}[H]
 		\centering
-		\includegraphics[width=1.2\textwidth]{gewichte_mark.pdf} 
+		\includegraphics[width=1.2\textwidth]{gewichte_mark_hj.pdf} 
 		\caption{Area-Plot der Gewichte für die Markowitz-Optimierung (halbjährlich)}
 		\label{fig:area_mark_hj}
 	\end{figure}
@@ -771,7 +799,7 @@
 	
 	\begin{figure}[H]
 		\centering
-		\includegraphics[width=1.2\textwidth]{gewichte_hrp.pdf} 
+		\includegraphics[width=1.2\textwidth]{gewichte_hrp_hj.pdf} 
 		\caption{Area-Plot der Gewichte für das HRP-Modell (halbjährlich)}
 		\label{fig:area_hrp_hj}
 	\end{figure}
@@ -780,7 +808,7 @@
 	
 	Abschließend werden die Daten zur Performance als Gesamtes betrachtet und für alle drei Rebalancing-Frequenzen. 
 	
-		\begin{table}[H]
+	\begin{table}[H]
 		\centering
 		\caption{Vergleich der Performance über verschiedene Rebalancing-Frequenzen}
 		\label{tab:performance_vergleich}
@@ -835,11 +863,535 @@
 	
 	Abschließend lässt sich festhalten, dass HRP eine wichtige Brücke zwischen der modernen Portfoliotheorie und den Anforderungen an numerische Stabilität schlägt. Während die klassische Optimierung ein wertvolles theoretisches Fundament bleibt, bietet der hierarchische Ansatz eine Antwort auf die Herausforderungen verrauschter Finanzmarktdaten.
 	
-\clearpage
-
-\printbibliography[title={Literaturverzeichnis}]
-\clearpage
-
-\section{Anhang}
+	\clearpage
+	
+	\printbibliography[title={Literaturverzeichnis}]
+	\clearpage
+	
+	\section{Anhang}
+	
+	\subsection{Performance-Plots}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=1.0\textwidth]{performance_j.pdf} 
+		\caption{Performance der Modelle bei jährlicher Rebalancing-Frequenz}
+		\label{fig:performance_j}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=1.0\textwidth]{performance_qs.pdf} 
+		\caption{Performance der Modelle bei quartalsweiser Rebalancing-Frequenz}
+		\label{fig:performance_qs}
+	\end{figure}	
+	
+	\subsection{Konditions-Plots}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=1.0\textwidth]{kondition_j.pdf} 
+		\caption{Konditionszahl (jährlich) über die Zeit}
+		\label{fig:kondition_j}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=1.0\textwidth]{kondition_qs.pdf} 
+		\caption{Konditionszahl (quartalsweise) über die Zeit}
+		\label{fig:kondition_qs}
+	\end{figure}
+	
+	\subsection{Area-Plots}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=1.2\textwidth]{gewichte_mark_j.pdf} 
+		\caption{Area-Plot der Gewichte für die Markowitz-Optimierung (jährlich)}
+		\label{fig:area_mark_j}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=1.2\textwidth]{gewichte_hrp_j.pdf} 
+		\caption{Area-Plot der Gewichte für das HRP-Modell (jährlich)}
+		\label{fig:area_hrp_j}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=1.2\textwidth]{gewichte_mark_qs.pdf} 
+		\caption{Area-Plot der Gewichte für die Markowitz-Optimierung (quartalsweise)}
+		\label{fig:area_mark_qs}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=1.2\textwidth]{gewichte_hrp_qs.pdf} 
+		\caption{Area-Plot der Gewichte für das HRP-Modell (quartalsweise)}
+		\label{fig:area_hrp_qs}
+	\end{figure}
+	
+	\clearpage
+	
+	\subsection{Python-Code}
+	
+	Der erste Code Abschnitt beschäftigt sich mit der Bereitstellung und der Vorbereitung der Daten für die Modellierung:
+	
+	\begin{lstlisting}[caption={Daten-Vorbereitung}, label={lst:daten_code}]
+		
+		import pandas as pd
+		import numpy as np
+		
+		# ------------------------------------------------------------
+		#  1. Rohdaten laden
+		# ------------------------------------------------------------
+		# Wir laden die neue Datei und stellen sicher, dass 'Date' das Datum ist
+		Daten = pd.read_csv("~/Dokumente/BA/Daten/Kursdaten_International.csv")
+		Daten["Date"] = pd.to_datetime(Daten["Date"])
+		
+		# ------------------------------------------------------------
+		#  2. Auswahl der Aktien
+		# ------------------------------------------------------------
+		aktien_df = [c for c in Daten.columns if c != "Date"]
+		
+		# Wir setzen das Startdatum auf den ersten verfügbaren Tag im neuen Datensatz
+		startdatum = Daten["Date"].min() 
+		print(f"Analysestart mit Daten ab: {startdatum}")
+		
+		# Da wir im Download-Skript schon dropna() gemacht haben, 
+		# sind zum Startdatum alle verbliebenen Aktien verfügbar.
+		aktien_liste = aktien_df 
+		daten_20 = Daten.loc[Daten["Date"] >= startdatum].copy()
+		
+		# ------------------------------------------------------------
+		#  3. Daten für Portfolio-Optimierung (Lookback-Anpassung)
+		# ------------------------------------------------------------
+		start_lookback = pd.Timestamp("2005-01-01") 
+		daten_20_erweitert = daten_20[daten_20["Date"] >= start_lookback].copy()
+		
+		# ------------------------------------------------------------
+		#  4. Tägliche log-Returns berechnen
+		# ------------------------------------------------------------
+		rendite_tag = daten_20_erweitert.copy()
+		rendite_tag[aktien_liste] = np.log(rendite_tag[aktien_liste] / rendite_tag[aktien_liste].shift(1))
+		rendite_tag = rendite_tag.dropna()
+		
+		# für Folgedateien
+		aktien20_98 = aktien_liste
+		
+	\end{lstlisting}
+	
+	Im zweiten Abschnitt wird die Markowitz-Optimierung durchgeführt:
+	
+	\begin{lstlisting}[caption={Markowitz-Optimierung}, label={lst:mark_code}]
+		
+		import pandas as pd 
+		from cvxopt import matrix, solvers 
+		import numpy as np 
+		import Daten as da 
+		from dateutil.relativedelta import relativedelta 
+		
+		# ------------------------------------------------------------ 
+		# 1. Daten Setup 
+		# ------------------------------------------------------------ 
+		rendite_tag = da.rendite_tag 
+		aktien = da.aktien20_98 
+		
+		# Zeitraum definieren: START am 01.01.2006, ENDE am 31.12.2025
+		# Ändere freq="YS" zu "QS" für Quartale oder "6MS" für Halbjahre
+		jahre = pd.date_range(start="2006-01-01", end="2025-12-31", freq="QS")          # Frequenz 
+		
+		portfolio_features = {} 
+		rueck = 12  # Lookback-Window in Monaten (z.B. 12 für ein Jahr Historie)
+		
+		# ------------------------------------------------------------ 
+		# 2. Feature Schätzung & Konditionszahlen 
+		# ------------------------------------------------------------ 
+		stability_results = [] 
+		
+		for folgejahr in jahre: 
+		start_rueck = folgejahr - relativedelta(months=rueck) 
+		
+		# Filter: Tagesrenditen im Lookback-Zeitraum
+		hist_daten = rendite_tag[ 
+		(rendite_tag["Date"] >= start_rueck) &  
+		(rendite_tag["Date"] < folgejahr) 
+		][aktien] 
+		
+		if hist_daten.empty: 
+		continue 
+		
+		mu_log = hist_daten.mean() 
+		cov_mat = hist_daten.cov() 
+		
+		# Speicherung der Features 
+		month_str = str(folgejahr.date()) 
+		portfolio_features[month_str] = { 
+			"mu": mu_log, 
+			"cov": cov_mat 
+		} 
+		
+		# Konditionszahl der rohen Kovarianzmatrix berechnen & speichern 
+		cond_no = np.linalg.cond(cov_mat.values) 
+		stability_results.append({'Date': folgejahr, 'Condition_Number': cond_no}) 
+		
+		# Stabilitäts-Daten in DataFrame umwandeln 
+		df_stability = pd.DataFrame(stability_results).set_index('Date') 
+		
+		# ------------------------------------------------------------ 
+		# 3. Markowitz Optimierung
+		# ------------------------------------------------------------ 
+		minvar_portfolios = {} 
+		solvers.options['show_progress'] = False # Unterdrückt CVXOPT-Output
+		
+		for jahr in portfolio_features.keys(): 
+		mu = portfolio_features[jahr]['mu'].values 
+		cov_mat = portfolio_features[jahr]['cov'].values 
+		n = len(mu) 
+		
+		# Shrinkage
+		epsilon = 1e-6 
+		cov_mat_reg = cov_mat + np.eye(n) * epsilon 
+		# Falls Matrix noch nicht positiv definit, Epsilon erhöhen
+		while np.any(np.linalg.eigvals(cov_mat_reg) <= 0): 
+		epsilon *= 10 
+		cov_mat_reg = cov_mat + np.eye(n) * epsilon 
+		
+		# QP Setup: Zielfunktion min w.T * P * w 
+		P = matrix(cov_mat_reg) 
+		q = matrix(np.zeros(n)) 
+		G = matrix(-np.eye(n))      # Nebenbedingung: w >= 0 (keine Leerverkäufe)
+		h = matrix(np.zeros(n)) 
+		A = matrix(np.ones((1, n))) # Nebenbedingung: Summe der Gewichte = 1 
+		b = matrix(np.ones(1)) 
+		
+		try:
+		sol = solvers.qp(P, q, G, h, A, b) 
+		gewicht = np.array(sol['x']).flatten() 
+		gewicht[gewicht < 1e-12] = 0 # Numerisches Rauschen auf 0 setzen
+		
+		minvar_portfolios[jahr] = pd.Series(gewicht, index=portfolio_features[jahr]['mu'].index) 
+		except:
+		print(f"Warnung: Optimierung für {jahr} fehlgeschlagen.")
+		
+		# ------------------------------------------------------------ 
+		# 4. Zusammenfassung & Stabilitäts-Metriken
+		# ------------------------------------------------------------ 
+		print("\n--- Analyse der Kovarianzmatrizen abgeschlossen ---") 
+		print(f"Max. Konditionszahl: {df_stability['Condition_Number'].max():.2f}") 
+		print(f"durschn. Konditionszahl:    {df_stability['Condition_Number'].mean():.2f}")
+		
+	\end{lstlisting}
+	
+	Im nächsten Code-Snippet wird der HRP-Algorithmus durchgeführt. Die Zeilen 31-88 von \textcite[229-231]{Lopez} entnommen. Der zitierte Code musste wahrscheinlich aufgrund einer neueren Python-Version leicht abgeändert werden.
+	
+	\clearpage
+	
+	\begin{lstlisting}[caption={HRP-Algorithmus}, label={lst:hrp_code}]
+		
+		# HRP 
+		from scipy.cluster.hierarchy import linkage 
+		from scipy.spatial.distance import squareform 
+		import numpy as np 
+		import pandas as pd 
+		from dateutil.relativedelta import relativedelta 
+		
+		import Daten as da 
+		import Markowitz as mark 
+		
+		# Daten Setup
+		rendite_tag = da.rendite_tag    # Log-Renditen 
+		aktien = da.aktien20_98 
+		portfolio_input = mark.portfolio_features 
+		
+		# --------------------------------------------------------- 
+		#                       HRP FUNKTIONEN
+		# --------------------------------------------------------- 
+		
+		def hrp(df): 
+		""" Generiert die Korrelations- und Abstandsmatrix. """ 
+		corr = df.corr() 
+		dist = 1 - corr 
+		dist = np.sqrt(0.5 * dist) 
+		
+		# Symmetrie erzwingen
+		dist = (dist + dist.T) / 2.0 
+		return corr, dist 
+		
+		def getQuasiDiag(Z, aktien_namen): 
+		""" Ermittelt die quasi-diagonale Reihenfolge der Assets (Seriation). """ 
+		Z = Z.astype(int) 
+		sortIx = pd.Series([Z[-1, 0], Z[-1, 1]]) 
+		numItems = Z[-1, 3]  
+		
+		while sortIx.max() >= numItems: 
+		sortIx.index = range(0, sortIx.shape[0] * 2, 2)  
+		df0 = sortIx[sortIx >= numItems] 
+		
+		i = df0.index 
+		j = df0.values - numItems 
+		
+		sortIx[i] = Z[j, 0]  
+		df0 = pd.Series(Z[j, 1], index=i + 1) 
+		
+		
+		sortIx = pd.concat([sortIx, df0]).sort_index()  
+		sortIx.index = range(sortIx.shape[0]) 
+		
+		return [aktien_namen[i] for i in sortIx.tolist()] 
+		
+		def get_ivp_weights(cov_mat): 
+		""" Berechnet Inverse-Varianz-Gewichte. """ 
+		ivp = 1.0 / np.diag(cov_mat)  
+		return ivp / np.sum(ivp) 
+		
+		def getClusterVar(cov, cItems): 
+		""" Berechnet die Varianz eines Clusters unter IVP-Gewichtung. """ 
+		cov_sub = cov.loc[cItems, cItems].values 
+		w_ivp = get_ivp_weights(cov_sub) 
+		cVar = (w_ivp @ cov_sub @ w_ivp).item() 
+		return cVar 
+		
+		def getRecBipart(cov, sortIx): 
+		""" Rekursive Bisektion zur Gewichtsallokation. """ 
+		w = pd.Series(1.0, index=sortIx) 
+		cItems = [sortIx] 
+		
+		while len(cItems) > 0: 
+		cItems = [i[j:k] for i in cItems  
+		for j, k in ((0, len(i) // 2),  
+		(len(i) // 2, len(i)))  
+		if len(i) > 1] 
+		
+		for i in range(0, len(cItems), 2): 
+		cItems0 = cItems[i] 
+		cItems1 = cItems[i + 1] 
+		
+		cVar0 = getClusterVar(cov, cItems0) 
+		cVar1 = getClusterVar(cov, cItems1) 
+		
+		alpha = 1.0 - cVar0 / (cVar0 + cVar1) 
+		
+		w[cItems0] *= alpha 
+		w[cItems1] *= (1.0 - alpha) 
+		
+		return w / w.sum() 
+		
+		# ----------------------------------------------------------------------------- 
+		#                       HRP LOOP (OPTIMIERUNG)
+		# ----------------------------------------------------------------------------- 
+		
+		# Enddatum: 31.12.2025 (identisch zu Markowitz)
+		jahre = pd.date_range(start="2006-01-01", end="2025-12-31", freq="QS")          # Frequenz YS, QS, 6ME
+		
+		hrp_port = {} 
+		portfolio_features = {} 
+		rueck = 12  # Lookback in Monaten
+		
+		for folgejahr in jahre: 
+		start_window = folgejahr - relativedelta(months=rueck) 
+		
+		# Filter: Historische Renditen für die Baum-Struktur
+		prev_window_returns = rendite_tag[ 
+		(rendite_tag["Date"] >= start_window) & 
+		(rendite_tag["Date"] < folgejahr) 
+		][aktien] 
+		
+		if prev_window_returns.empty: 
+		continue 
+		
+		year_key = str(folgejahr.date()) 
+		
+		# 1. Korrelations- und Abstandsmatrix
+		corr, dist = hrp(prev_window_returns) 
+		
+		# 2. Kovarianzmatrix aus dem Markowitz-Modul ziehen
+		cov = portfolio_input[year_key]['cov'] 
+		
+		# 3. Clustering (Linkage) 
+		dist_array = dist.values 
+		dist_vector = squareform(dist_array) 
+		Z = linkage(dist_vector, method='ward') 
+		
+		# 4. Quasidiagonalisierung & Gewichte
+		# Übergabe der Spaltennamen von 'dist', damit die Indizes passen
+		order = getQuasiDiag(Z, dist.columns.tolist()) 
+		w = getRecBipart(cov, order) 
+		
+		# 5. Speichern
+		hrp_port[year_key] = w.reindex(aktien, fill_value=0.0) 
+		portfolio_features[year_key] = { 
+			"Korrelation": corr, 
+			"Abstand": dist 
+		} 
+		
+		print("\n--- HRP-Optimierung abgeschlossen (Zeitraum bis 2025) ---")
+		
+	\end{lstlisting}
+	
+	Im letzten Code-Abschnitt werden die Ergebnisse zusammengetragen und geplottet:
+	
+	\begin{lstlisting}[caption={Auswertung und Plots}, label={lst:vgl_code}]
+		
+		import pandas as pd
+		import numpy as np
+		import matplotlib.pyplot as plt
+		import HRP as HRP
+		import Markowitz as mark
+		import Daten as da
+		
+		# 1. Daten laden
+		hrp_port = HRP.hrp_port
+		minvar_portfolios = mark.minvar_portfolios
+		rendite_tag = da.rendite_tag
+		
+		# -----------------------------------------------------------------------------
+		# Vorbereitung
+		# -----------------------------------------------------------------------------
+		end_date = pd.Timestamp("2025-12-31")
+		rendite_tag = rendite_tag[rendite_tag['Date'] <= end_date].copy()
+		
+		def evaluate_portfolios(hrp_weights_dict, mv_weights_dict, daily_returns, risk_free_rate=0.0):
+		"""
+		Berechnet Performance-Metriken für JEDE Rebalancing-Frequenz.
+		"""
+		df_hrp = pd.DataFrame(hrp_weights_dict).T
+		df_mv = pd.DataFrame(mv_weights_dict).T
+		df_hrp.index = pd.to_datetime(df_hrp.index)
+		df_mv.index = pd.to_datetime(df_mv.index)
+		
+		num_assets = len(df_hrp.columns)
+		df_naive = pd.DataFrame(1.0 / num_assets, index=df_hrp.index, columns=df_hrp.columns)
+		
+		hrp_rets, mv_rets, naive_rets = [], [], []
+		daily_returns['Date'] = pd.to_datetime(daily_returns['Date'])
+		
+		# Termine sortieren für korrekte Intervallbildung
+		rebal_dates = df_hrp.index.sort_values()
+		
+		for i in range(len(rebal_dates)):
+		current_date = rebal_dates[i]
+		
+		# Fenster bestimmen (vom aktuellen zum nächsten Rebalancing)
+		if i < len(rebal_dates) - 1:
+		next_date = rebal_dates[i+1]
+		else:
+		next_date = daily_returns['Date'].max() + pd.Timedelta(days=1)
+		
+		mask = (daily_returns['Date'] >= current_date) & (daily_returns['Date'] < next_date)
+		window_returns = daily_returns.loc[mask].set_index('Date')
+		
+		if window_returns.empty:
+		continue
+		
+		# Gewichte anwenden
+		w_hrp = df_hrp.loc[current_date].reindex(window_returns.columns).fillna(0)
+		w_mv = df_mv.loc[current_date].reindex(window_returns.columns).fillna(0)
+		w_naive = df_naive.loc[current_date].reindex(window_returns.columns).fillna(0)
+		
+		hrp_rets.append(window_returns @ w_hrp)
+		mv_rets.append(window_returns @ w_mv)
+		naive_rets.append(window_returns @ w_naive)
+		
+		# Zusammenführen
+		portfolio_results = pd.DataFrame({
+			'HRP': pd.concat(hrp_rets),
+			'Markowitz (MinVar)': pd.concat(mv_rets),
+			'Naive (1/n)': pd.concat(naive_rets)
+		}).sort_index()
+		
+		# Performance-Kennzahlen (arithmetisch kumuliert aus Log-Returns)
+		cum_returns = np.exp(portfolio_results.cumsum()) - 1
+		ann_return = portfolio_results.mean() * 252
+		ann_vol = portfolio_results.std() * np.sqrt(252)
+		sharpe_ratio = (ann_return - risk_free_rate) / ann_vol
+		
+		# Max Drawdown (Korrekt über Wealth Index)
+		wealth_index = (1 + cum_returns)
+		peak = wealth_index.expanding().max()
+		drawdown = (wealth_index / peak) - 1
+		max_drawdown = drawdown.min()
+		
+		metrics = pd.DataFrame({
+			'Ann. Rendite': ann_return,
+			'Ann. Volatilität': ann_vol,
+			'Sharpe Ratio': sharpe_ratio,
+			'Max Drawdown': max_drawdown
+		}).T
+		
+		return cum_returns, metrics, portfolio_results
+		
+		def calculate_turnover(weights_dict):
+		df_weights = pd.DataFrame(weights_dict).T
+		diff = df_weights.diff().abs().sum(axis=1)
+		return diff.mean()
+		
+		# -----------------------------------------------------------------------------
+		# Plots
+		# -----------------------------------------------------------------------------
+		
+		try:
+		cum_returns, metrics, p_rets = evaluate_portfolios(hrp_port, minvar_portfolios, rendite_tag)
+		
+		# 1. Performance Plot
+		plt.figure(figsize=(12, 6))
+		for col in cum_returns.columns:
+		plt.plot(cum_returns[col], label=col)
+		plt.title("Kumulierte Performance (Out-of-Sample)", fontsize=14)
+		plt.ylabel("Rendite", fontsize=12)
+		plt.grid(True, alpha=0.3)
+		plt.legend()
+		plt.savefig(f"performance.pdf", format='pdf', bbox_inches='tight')
+		plt.show()
+		
+		# 2. Metriken & Turnover
+		turnover_hrp = calculate_turnover(hrp_port)
+		turnover_mv = calculate_turnover(minvar_portfolios)
+		metrics.loc['Avg. Turnover'] = [turnover_hrp, turnover_mv, 0.0]
+		
+		print("\n--- Final Metrics ---")
+		print(metrics.round(4))
+		
+		# 3. Gewichts-Plots
+		def plot_weights(weights_dict, title):
+		df_w = pd.DataFrame(weights_dict).T
+		df_w.index = pd.to_datetime(df_w.index)
+		df_w.plot.area(figsize=(12, 5), stacked=True, cmap='tab20', alpha=0.8)
+		plt.title(title)
+		plt.legend(loc='center left', bbox_to_anchor=(1, 0.5), fontsize=7, ncol=2)
+		plt.tight_layout()
+		plt.savefig(f"gewichte.pdf", format='pdf', bbox_inches='tight')
+		plt.show()
+		
+		plot_weights(hrp_port, "HRP Gewichtsverteilung")
+		plot_weights(minvar_portfolios, "Markowitz Gewichtsverteilung")           # Überschreibt aktuell den HRP Plot
+		# mit dem Markowitz Plot
+		# 4. Stabilitäts-Plot (Konditionszahl der Kovarianzmatrix)
+		# (df_stability)
+		if hasattr(mark, 'df_stability'):
+		plt.figure(figsize=(12, 5))
+		# Semilogarithmische Darstellung, da Konditionszahlen oft Größenordnungen springen
+		plt.semilogy(mark.df_stability.index, mark.df_stability['Condition_Number'], 
+		color='#d62728', marker='o', markersize=4, label='Konditionszahl $\kappa(\Sigma)$')
+		
+		# Optische Hilfslinie für "kritische" Instabilität (Faustregel 10^3 bis 10^4)
+		# plt.axhline(y=1000, color='black', linestyle='--', alpha=0.3, label='Schwelle zur Instabilität ($10^3$)')
+		
+		plt.title("Numerische Stabilität der Schätzung (Konditionszahl)", fontsize=14)
+		plt.ylabel("Konditionszahl (Log-Skala)", fontsize=12)
+		plt.xlabel("Rebalancing-Zeitpunkt", fontsize=12)
+		plt.grid(True, which="both", ls="-", alpha=0.2)
+		plt.legend()
+		plt.tight_layout()
+		plt.savefig(f"kondition.pdf", format='pdf', bbox_inches='tight')
+		plt.show()
+		else:
+		print("\n[Hinweis] df_stability wurde im Markowitz-Modul nicht gefunden.")
+		
+		except Exception as e:
+		print(f"Fehler: {e}")
+		
+	\end{lstlisting}
 	
 \end{document}
