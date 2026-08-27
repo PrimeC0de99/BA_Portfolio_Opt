@@ -19,11 +19,18 @@ rendite_tag = rendite_tag[rendite_tag['Date'] <= end_date].copy()
 def evaluate_portfolios(hrp_weights_dict, mv_weights_dict, daily_returns, risk_free_rate=0.0):
     """
     Berechnet Performance-Metriken für JEDE Rebalancing-Frequenz.
+    Garantierte chronologische Konsistenz durch explizite Datetime-Sortierung.
     """
+    # 1. Daten in DataFrames konvertieren und den Index sauber in Datetime transformieren
     df_hrp = pd.DataFrame(hrp_weights_dict).T
     df_mv = pd.DataFrame(mv_weights_dict).T
+    
     df_hrp.index = pd.to_datetime(df_hrp.index)
     df_mv.index = pd.to_datetime(df_mv.index)
+    
+    # Sortieren, um chronologische Konsistenz zu garantieren
+    df_hrp = df_hrp.sort_index()
+    df_mv = df_mv.sort_index()
 
     num_assets = len(df_hrp.columns)
     df_naive = pd.DataFrame(1.0 / num_assets, index=df_hrp.index, columns=df_hrp.columns)
@@ -31,13 +38,13 @@ def evaluate_portfolios(hrp_weights_dict, mv_weights_dict, daily_returns, risk_f
     hrp_rets, mv_rets, naive_rets = [], [], []
     daily_returns['Date'] = pd.to_datetime(daily_returns['Date'])
     
-    # Termine sortieren für korrekte Intervallbildung
-    rebal_dates = df_hrp.index.sort_values()
+    # Echte, harmonisierte Rebalancing-Termine nutzen
+    rebal_dates = df_hrp.index
 
     for i in range(len(rebal_dates)):
         current_date = rebal_dates[i]
         
-        # Fenster bestimmen (vom aktuellen zum nächsten Rebalancing)
+        # Fenster exakt bestimmen
         if i < len(rebal_dates) - 1:
             next_date = rebal_dates[i+1]
         else:
@@ -49,7 +56,7 @@ def evaluate_portfolios(hrp_weights_dict, mv_weights_dict, daily_returns, risk_f
         if window_returns.empty:
             continue
             
-        # Gewichte anwenden
+        # Gewichte mathematisch exakt über loc[current_date] zuordnen
         w_hrp = df_hrp.loc[current_date].reindex(window_returns.columns).fillna(0)
         w_mv = df_mv.loc[current_date].reindex(window_returns.columns).fillna(0)
         w_naive = df_naive.loc[current_date].reindex(window_returns.columns).fillna(0)
@@ -58,7 +65,7 @@ def evaluate_portfolios(hrp_weights_dict, mv_weights_dict, daily_returns, risk_f
         mv_rets.append(window_returns @ w_mv)
         naive_rets.append(window_returns @ w_naive)
 
-    # Zusammenführen
+    # Zusammenführen der täglichen Renditen
     portfolio_results = pd.DataFrame({
         'HRP': pd.concat(hrp_rets),
         'Markowitz (MinVar)': pd.concat(mv_rets),
@@ -129,7 +136,7 @@ try:
         plt.show()
 
     plot_weights(hrp_port, "HRP Gewichtsverteilung")
-    # plot_weights(minvar_portfolios, "Markowitz Gewichtsverteilung")           # Überschreibt aktuell den HRP Plot
+    plot_weights(minvar_portfolios, "Markowitz Gewichtsverteilung")           # Überschreibt aktuell den HRP Plot
                                                                                 # mit dem Markowitz Plot
     # 4. Stabilitäts-Plot (Konditionszahl der Kovarianzmatrix)
     # (df_stability)
