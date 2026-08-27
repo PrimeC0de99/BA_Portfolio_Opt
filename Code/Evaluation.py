@@ -162,4 +162,3 @@ try:
     
 except Exception as e:
     print(f"Fehler: {e}")
-    
