@@ -169,22 +169,54 @@ def calculate_turnover(weights_dict):
 try:
     cum_returns, metrics, p_rets = evaluate_portfolios(hrp_port, minvar_portfolios, mkt_port, rendite_tag)
 
-    # 1. Performance Plot
+    # -------------------------------------------------------------------------
+    # 1. Performance Plots
+    # -------------------------------------------------------------------------
+    
+    # Basis-Wertentwicklung über den gesamten Zeitraum (Startwert = 1)
+    wertentwicklung = 1 + cum_returns
+
+    # A) Gesamt-Plot (2006 – 2025) für den Hauptteil
     plt.figure(figsize=(12, 6))
-    
-    # Wertentwicklung (Wealth Index) mit Startwert 1
-    wertentwicklung = 1 + cum_returns 
-    
     for col in wertentwicklung.columns:
         plt.plot(wertentwicklung[col], label=col)
-        
-    plt.title("Kumulierte Wertentwicklung (Out-of-Sample)", fontsize=14)
-    plt.ylabel("Wertentwicklung", fontsize=12)
+    plt.title("Kumulierte Wertentwicklung (Out-of-Sample: 2006 – 2025)", fontsize=14)
+    plt.ylabel("Portfolio-Wert (Basis 1)", fontsize=12)
     plt.grid(True, alpha=0.3)
     plt.legend()
-    plt.savefig(f"performance.pdf", format='pdf', bbox_inches='tight')
+    plt.tight_layout()
+    plt.savefig("performance_gesamt.pdf", format='pdf', bbox_inches='tight')
     plt.show()
 
+    # B) Teil 1: 2006 – 2015 (Re-Basiert auf 1)
+    we_p1 = wertentwicklung.loc['2006-01-01':'2015-12-31']
+    we_p1 = we_p1 / we_p1.iloc[0]  # Auf 1 normieren
+
+    plt.figure(figsize=(10, 5))
+    for col in we_p1.columns:
+        plt.plot(we_p1[col], label=col)
+    plt.title("Kumulierte Wertentwicklung (2006 – 2015)", fontsize=13)
+    plt.ylabel("Portfolio-Wert (Basis 1)", fontsize=11)
+    plt.grid(True, alpha=0.3)
+    plt.legend()
+    plt.tight_layout()
+    plt.savefig("performance_2006_2015.pdf", format='pdf', bbox_inches='tight')
+    plt.show()
+
+    # C) Teil 2: 2016 – 2025 (Re-Basiert auf 1)
+    we_p2 = wertentwicklung.loc['2016-01-01':'2025-12-31']
+    we_p2 = we_p2 / we_p2.iloc[0]  # Auf 1 normieren
+
+    plt.figure(figsize=(10, 5))
+    for col in we_p2.columns:
+        plt.plot(we_p2[col], label=col)
+    plt.title("Kumulierte Wertentwicklung (2016 – 2025)", fontsize=13)
+    plt.ylabel("Portfolio-Wert (Basis 1)", fontsize=11)
+    plt.grid(True, alpha=0.3)
+    plt.legend()
+    plt.tight_layout()
+    plt.savefig("performance_2016_2025.pdf", format='pdf', bbox_inches='tight')
+    plt.show()
     # 2. Metriken & Turnover
     turnover_hrp = calculate_turnover(hrp_port)
     turnover_mv = calculate_turnover(minvar_portfolios)
