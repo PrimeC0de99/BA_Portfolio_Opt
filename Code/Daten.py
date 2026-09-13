@@ -5,7 +5,7 @@ import numpy as np
 #  1. Rohdaten laden
 # ------------------------------------------------------------
 # Wir laden die neue Datei und stellen sicher, dass 'Date' das Datum ist
-Daten = pd.read_csv("~/Dokumente/BA/Daten/Kursdaten_International.csv")
+Daten = pd.read_csv("C:/Users/nicla/Documents/VS_Projekte/BA/BA_Portfolio_Opt/Daten/Kursdaten_International.csv")
 Daten["Date"] = pd.to_datetime(Daten["Date"])
 
 # ------------------------------------------------------------
