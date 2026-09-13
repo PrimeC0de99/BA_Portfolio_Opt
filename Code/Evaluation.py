@@ -171,10 +171,15 @@ try:
 
     # 1. Performance Plot
     plt.figure(figsize=(12, 6))
-    for col in cum_returns.columns:
-        plt.plot(cum_returns[col], label=col)
-    plt.title("Kumulierte Performance (Out-of-Sample)", fontsize=14)
-    plt.ylabel("Rendite", fontsize=12)
+    
+    # Wertentwicklung (Wealth Index) mit Startwert 1
+    wertentwicklung = 1 + cum_returns 
+    
+    for col in wertentwicklung.columns:
+        plt.plot(wertentwicklung[col], label=col)
+        
+    plt.title("Kumulierte Wertentwicklung (Out-of-Sample)", fontsize=14)
+    plt.ylabel("Wertentwicklung", fontsize=12)
     plt.grid(True, alpha=0.3)
     plt.legend()
     plt.savefig(f"performance.pdf", format='pdf', bbox_inches='tight')
