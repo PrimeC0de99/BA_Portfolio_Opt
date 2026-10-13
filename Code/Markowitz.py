@@ -10,9 +10,9 @@ from dateutil.relativedelta import relativedelta
 rendite_tag = da.rendite_tag 
 aktien = da.aktien20_98 
 
-# Zeitraum definieren: START am 01.01.2006, ENDE am 31.12.2025
+# Zeitraum definieren
 # Ändere freq="YS" zu "QS" für Quartale oder "6MS" für Halbjahre
-jahre = pd.date_range(start="2006-01-01", end="2025-12-31", freq="6ME")          # Frequenz 
+jahre = pd.date_range(start="2006-01-01", end="2025-12-31", freq="QS")          # Frequenz 
 
 portfolio_features = {} 
 rueck = 12  # Lookback-Window in Monaten (z.B. 12 für ein Jahr Historie)

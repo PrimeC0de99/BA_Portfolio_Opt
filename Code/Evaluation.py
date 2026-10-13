@@ -12,7 +12,7 @@ hrp_port = HRP.hrp_port
 minvar_portfolios = mark.minvar_portfolios
 rendite_tag = da.rendite_tag
 
-# Definition der Aktienliste direkt aus da
+# Definition der Aktienliste
 aktien_liste = da.aktien20_98 
 
 
@@ -23,23 +23,23 @@ aktien_liste = da.aktien20_98
 # 1. Bereinigte CSV direkt in Pandas laden
 df_raw = pd.read_csv(r"C:/Users/nicla/Documents/VS_Projekte/BA/BA_Portfolio_Opt/Daten/Marktkapitalisierung_2_clean.csv")
 
-# 2. Robuste Funktion zur Umwandlung von Text (z.B. "$5.271 T" oder "$238.18 B") in Floats
-def clean_marketcap(val):
-    if pd.isna(val):
-        return 0.0
-    val_str = str(val).replace('$', '').replace(',', '').strip()
-    if 'T' in val_str:
-        # Billionen (Trillions) in Milliarden umrechnen, damit die Relation stimmt
-        return float(val_str.replace('T', '').strip()) * 1000.0
-    elif 'B' in val_str:
-        return float(val_str.replace('B', '').strip())
-    else:
-        try:
-            return float(val_str)
-        except ValueError:
-            return 0.0
+# 2. Funktion zur Umwandlung von Text in Floats
+# def clean_marketcap(val):
+#     if pd.isna(val):
+#         return 0.0
+#     val_str = str(val).replace('$', '').replace(',', '').strip()
+#     if 'T' in val_str:
+#         # Billionen (Trillions) in Milliarden umrechnen, damit die Relation stimmt
+#         return float(val_str.replace('T', '').strip()) * 1000.0
+#     elif 'B' in val_str:
+#         return float(val_str.replace('B', '').strip())
+#     else:
+#         try:
+#             return float(val_str)
+#         except ValueError:
+#             return 0.0
 
-df_raw['Marketcap'] = df_raw['Marketcap'].apply(clean_marketcap)
+# df_raw['Marketcap'] = df_raw['Marketcap'].apply(clean_marketcap)
 
 # 3. Pivot-Tabelle erstellen: Jahre als Index, Ticker als Spalten
 mcap_df = df_raw.pivot(index='Year', columns='Ticker', values='Marketcap').fillna(0.0)
@@ -176,19 +176,19 @@ try:
     # Basis-Wertentwicklung über den gesamten Zeitraum (Startwert = 1)
     wertentwicklung = 1 + cum_returns
 
-    # A) Gesamt-Plot (2006 – 2025) für den Hauptteil
+    # Gesamt-Plot (2006 – 2025) für den Hauptteil
     plt.figure(figsize=(12, 6))
     for col in wertentwicklung.columns:
         plt.plot(wertentwicklung[col], label=col)
     plt.title("Kumulierte Wertentwicklung (Out-of-Sample: 2006 – 2025)", fontsize=14)
-    plt.ylabel("Portfolio-Wert (Basis 1)", fontsize=12)
+    plt.ylabel("Wertentwicklung", fontsize=12)
     plt.grid(True, alpha=0.3)
     plt.legend()
     plt.tight_layout()
-    plt.savefig("performance_gesamt.pdf", format='pdf', bbox_inches='tight')
+    plt.savefig("performance_gesamt_q.pdf", format='pdf', bbox_inches='tight')
     plt.show()
 
-    # B) Teil 1: 2006 – 2015 (Re-Basiert auf 1)
+    # Teil 1: 2006 – 2015 (Re-Basiert auf 1)
     we_p1 = wertentwicklung.loc['2006-01-01':'2015-12-31']
     we_p1 = we_p1 / we_p1.iloc[0]  # Auf 1 normieren
 
@@ -196,14 +196,14 @@ try:
     for col in we_p1.columns:
         plt.plot(we_p1[col], label=col)
     plt.title("Kumulierte Wertentwicklung (2006 – 2015)", fontsize=13)
-    plt.ylabel("Portfolio-Wert (Basis 1)", fontsize=11)
+    plt.ylabel("Wertentwicklung", fontsize=11)
     plt.grid(True, alpha=0.3)
     plt.legend()
     plt.tight_layout()
-    plt.savefig("performance_2006_2015.pdf", format='pdf', bbox_inches='tight')
+    plt.savefig("performance_2006_2015_q.pdf", format='pdf', bbox_inches='tight')
     plt.show()
 
-    # C) Teil 2: 2016 – 2025 (Re-Basiert auf 1)
+    # Teil 2: 2016 – 2025 (Re-Basiert auf 1)
     we_p2 = wertentwicklung.loc['2016-01-01':'2025-12-31']
     we_p2 = we_p2 / we_p2.iloc[0]  # Auf 1 normieren
 
@@ -211,12 +211,34 @@ try:
     for col in we_p2.columns:
         plt.plot(we_p2[col], label=col)
     plt.title("Kumulierte Wertentwicklung (2016 – 2025)", fontsize=13)
-    plt.ylabel("Portfolio-Wert (Basis 1)", fontsize=11)
+    plt.ylabel("Wertentwicklung", fontsize=11)
     plt.grid(True, alpha=0.3)
     plt.legend()
     plt.tight_layout()
-    plt.savefig("performance_2016_2025.pdf", format='pdf', bbox_inches='tight')
+    plt.savefig("performance_2016_2025_q.pdf", format='pdf', bbox_inches='tight')
     plt.show()
+
+
+    # -------------------------------------------------------------------------
+    # 4. Rollierende Volatilität (252 Handelstage ~ 1 Jahr)
+    # -------------------------------------------------------------------------
+    # Berechnet die annualisierte Standardabweichung im 1-Jahres-Fenster
+    rolling_vol = p_rets.rolling(window=252).std() * np.sqrt(252)
+
+    plt.figure(figsize=(12, 6))
+    for col in rolling_vol.columns:
+        plt.plot(rolling_vol[col], label=col)
+
+    plt.title("Volatilitäten", fontsize=14)
+    plt.xlabel("Datum", fontsize=12)
+    plt.ylabel("Annualisierte Volatilität", fontsize=12)
+    plt.grid(True, alpha=0.3)
+    plt.legend()
+    plt.tight_layout()
+    plt.savefig("vola_q.pdf", format='pdf', bbox_inches='tight')
+    plt.show()
+
+
     # 2. Metriken & Turnover
     turnover_hrp = calculate_turnover(hrp_port)
     turnover_mv = calculate_turnover(minvar_portfolios)
