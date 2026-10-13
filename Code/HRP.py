@@ -91,7 +91,7 @@ def getRecBipart(cov, sortIx):
 # ----------------------------------------------------------------------------- 
 
 # Enddatum: 31.12.2025 (identisch zu Markowitz)
-jahre = pd.date_range(start="2006-01-01", end="2025-12-31", freq="6ME")          # Frequenz YS, QS, 6ME
+jahre = pd.date_range(start="2006-01-01", end="2025-12-31", freq="QS")          # Frequenz YS, QS, 6ME
 
 hrp_port = {} 
 portfolio_features = {} 

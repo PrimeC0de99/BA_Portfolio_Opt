@@ -4,8 +4,8 @@ import numpy as np
 # ------------------------------------------------------------
 #  1. Rohdaten laden
 # ------------------------------------------------------------
-# Wir laden die neue Datei und stellen sicher, dass 'Date' das Datum ist
-Daten = pd.read_csv("~/Dokumente/BA/Daten/Kursdaten_International.csv")
+# Datei laden und sicherstellen, dass 'Date' das Datum ist
+Daten = pd.read_csv("C:/Users/nicla/Documents/VS_Projekte/BA/BA_Portfolio_Opt/Daten/Kursdaten_International.csv")
 Daten["Date"] = pd.to_datetime(Daten["Date"])
 
 # ------------------------------------------------------------
@@ -13,12 +13,10 @@ Daten["Date"] = pd.to_datetime(Daten["Date"])
 # ------------------------------------------------------------
 aktien_df = [c for c in Daten.columns if c != "Date"]
 
-# Wir setzen das Startdatum auf den ersten verfügbaren Tag im neuen Datensatz
+#Startdatum auf den ersten verfügbaren Tag im neuen Datensatz setzen
 startdatum = Daten["Date"].min() 
 print(f"Analysestart mit Daten ab: {startdatum}")
 
-# Da wir im Download-Skript schon dropna() gemacht haben, 
-# sind zum Startdatum alle verbliebenen Aktien verfügbar.
 aktien_liste = aktien_df 
 daten_20 = Daten.loc[Daten["Date"] >= startdatum].copy()
 
